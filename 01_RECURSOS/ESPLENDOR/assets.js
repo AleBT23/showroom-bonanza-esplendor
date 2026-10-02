@@ -4,7 +4,7 @@
  */
 
 var CBZ_ASSETS = {
-  heroVideo: 'video_esplendor.mp4',
+  heroVideo: 'Video Esplendor.mp4',
   renders: [
     { file: 'COCHERA.png',        url: '../01_RECURSOS/ESPLENDOR/RENDERS/COCHERA.png' },
     { file: 'COCHERA NOCHE.png',  url: '../01_RECURSOS/ESPLENDOR/RENDERS/COCHERA%20NOCHE.png' },

@@ -5,7 +5,7 @@
  */
 
 var CBZ_ASSETS = {
-  heroVideo: 'Video_Bonanza.mp4',
+  heroVideo: 'Video Bonanza.mp4',
   renders: [],
   plans: [],
   panoramas: [
