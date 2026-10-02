@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Casa Esplendor — Showroom arquitectónico interactivo 360°">
+  <title>Casa Esplendor — Showroom 360°</title>
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/hero.css">
+  <link rel="stylesheet" href="css/property-selector.css">
+</head>
+<body>
+  <script>
+    var params = new URLSearchParams(window.location.search);
+    var requestedProperty = params.get("property");
+    var property = (requestedProperty || "esplendor").toUpperCase();
+    if (property !== "ESPLENDOR" && property !== "BONANZA") property = "ESPLENDOR";
+    window.CBZ_PROPERTY = property;
+    window.CBZ_SHOW_PROPERTY_SELECTOR = !requestedProperty && params.get("edit") !== "1";
+  </script>
+
+  <section id="cbz-property-selector" aria-label="Seleccionar propiedad" aria-hidden="true" tabindex="0">
+    <div class="cbz-property-selector__slides">
+      <button class="cbz-property-slide is-active" type="button" data-property="ESPLENDOR" aria-label="Seleccionar Casa Esplendor">
+        <img src="../01_RECURSOS/ESPLENDOR/RENDERS/ENTRADA.png" alt="">
+      </button>
+      <button class="cbz-property-slide" type="button" data-property="BONANZA" aria-label="Seleccionar Casa Bonanza">
+        <img src="../01_RECURSOS/BONANZA/RENDERS/ENTRADA.png" alt="">
+      </button>
+    </div>
+    <div class="cbz-property-selector__shade" aria-hidden="true"></div>
+    <div class="cbz-property-selector__content">
+      <p class="cbz-property-selector__eyebrow">SELECCIONAR PROPIEDAD</p>
+      <h1 id="cbz-property-selector-title">CASA ESPLENDOR</h1>
+      <p class="cbz-property-selector__hint">DESLIZA O UTILIZA LAS FLECHAS</p>
+    </div>
+    <button id="cbz-property-selector-prev" class="cbz-property-selector__arrow cbz-property-selector__arrow--prev" type="button" aria-label="Propiedad anterior">‹</button>
+    <button id="cbz-property-selector-next" class="cbz-property-selector__arrow cbz-property-selector__arrow--next" type="button" aria-label="Propiedad siguiente">›</button>
+    <div class="cbz-property-selector__progress" aria-hidden="true">
+      <span class="is-active"></span><span></span>
+    </div>
+  </section>
+
+  <!-- HERO de bienvenida -->
+  <div id="cbz-hero">
+    <video id="cbz-hero-video" autoplay loop muted playsinline preload="metadata"></video>
+    <div id="cbz-hero-overlay"></div>
+    <div id="cbz-hero-title">CASA ESPLENDOR</div>
+    <div id="cbz-hero-content">
+      <button id="cbz-hero-btn">INICIAR RECORRIDO</button>
+      <nav class="cbz-hero-secondary" aria-label="Navegación principal">
+        <button id="cbz-hero-gallery-btn" class="cbz-text-button" type="button">GALERÍA</button>
+        <span aria-hidden="true">|</span>
+        <button id="cbz-hero-contact-btn" class="cbz-text-button" type="button">CONTACTAR</button>
+        <span aria-hidden="true">|</span>
+        <a class="cbz-text-button" href="./index.html">CAMBIAR CASA</a>
+      </nav>
+    </div>
+  </div>
+
+  <!-- Capa editorial de navegación y contenidos -->
+  <div id="cbz-experience" aria-hidden="true">
+    <section class="cbz-screen cbz-screen--gallery" data-screen="gallery" aria-labelledby="cbz-gallery-title">
+      <div class="cbz-screen-head">
+        <span class="cbz-screen-kicker">CASA ESPLENDOR</span>
+        <button class="cbz-close-button" data-action="close-experience" type="button" aria-label="Cerrar">×</button>
+      </div>
+      <div class="cbz-gallery-content">
+        <p class="cbz-screen-kicker">EXPLORAR</p>
+        <h2 id="cbz-gallery-title">GALERÍA</h2>
+        <div class="cbz-gallery-nav">
+          <button class="cbz-gallery-choice" data-screen-target="renders" type="button">
+            <span>RENDERS FOTOGRÁFICOS</span><small>01</small>
+          </button>
+          <span class="cbz-gallery-divider" aria-hidden="true"></span>
+          <button class="cbz-gallery-choice" data-screen-target="plans" type="button">
+            <span>PLANTAS ARQUITECTÓNICAS</span><small>02</small>
+          </button>
+        </div>
+        <button class="cbz-primary-link" data-action="start-tour" type="button">INICIAR RECORRIDO <span>↗</span></button>
+        <button class="cbz-secondary-link" data-screen-target="contact" type="button">CONTACTAR</button>
+      </div>
+    </section>
+
+    <section class="cbz-screen cbz-screen--subview" data-screen="renders" aria-labelledby="cbz-renders-title">
+      <div class="cbz-screen-head">
+        <button class="cbz-back-button" data-screen-target="gallery" type="button">← GALERÍA</button>
+        <span class="cbz-screen-kicker">CASA ESPLENDOR</span>
+        <button class="cbz-close-button" data-action="close-experience" type="button" aria-label="Cerrar">×</button>
+      </div>
+      <div class="cbz-subview-content">
+        <p class="cbz-screen-kicker">01 / IMAGEN</p>
+        <h2 id="cbz-renders-title">RENDERS FOTOGRÁFICOS</h2>
+        <div id="cbz-renders-grid" class="cbz-renders-grid" aria-live="polite"></div>
+      </div>
+    </section>
+
+    <section class="cbz-screen cbz-screen--subview" data-screen="plans" aria-labelledby="cbz-plans-title">
+      <div class="cbz-screen-head">
+        <button class="cbz-back-button" data-screen-target="gallery" type="button">← GALERÍA</button>
+        <span class="cbz-screen-kicker">CASA ESPLENDOR</span>
+        <button class="cbz-close-button" data-action="close-experience" type="button" aria-label="Cerrar">×</button>
+      </div>
+      <div class="cbz-subview-content cbz-plans-content">
+        <p class="cbz-screen-kicker">02 / DOCUMENTO</p>
+        <h2 id="cbz-plans-title">PLANTAS ARQUITECTÓNICAS</h2>
+        <div id="cbz-plans-tabs" class="cbz-plans-tabs" role="tablist" aria-label="Seleccionar planta"></div>
+        <div id="cbz-plan-viewer" class="cbz-plan-viewer" aria-live="polite"></div>
+      </div>
+    </section>
+
+    <section class="cbz-screen cbz-screen--contact" data-screen="contact" aria-labelledby="cbz-contact-title">
+      <div class="cbz-screen-head">
+        <button class="cbz-back-button" data-screen-target="gallery" type="button">← GALERÍA</button>
+        <span class="cbz-screen-kicker">CASA ESPLENDOR</span>
+        <button class="cbz-close-button" data-action="close-experience" type="button" aria-label="Cerrar">×</button>
+      </div>
+      <div class="cbz-contact-content">
+        <p class="cbz-screen-kicker">CONTACTO</p>
+        <h2 id="cbz-contact-title">¿TE INTERESA<br>CONOCERLA?</h2>
+        <div class="cbz-contact-actions">
+          <a href="#" class="cbz-contact-action">WHATSAPP <span>↗</span></a>
+          <a href="tel:" class="cbz-contact-action">LLAMAR <span>↗</span></a>
+          <button class="cbz-contact-action" type="button">SOLICITAR INFORMACIÓN <span>↗</span></button>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <div id="cbz-lightbox" class="cbz-lightbox" aria-hidden="true" role="dialog" aria-label="Vista ampliada">
+    <button id="cbz-lightbox-close" class="cbz-close-button" type="button" aria-label="Cerrar imagen">×</button>
+    <img id="cbz-lightbox-image" alt="">
+    <p id="cbz-lightbox-caption"></p>
+  </div>
+
+  <!-- Visor 360° — controlado por Marzipano -->
+  <div id="pano"></div>
+
+  <div id="cbz-scene-transition" aria-hidden="true"></div>
+
+  <!-- Menú flotante del recorrido 360 -->
+  <div id="cbz-tour-menu" aria-hidden="true">
+    <div class="cbz-tour-menu__panel" role="dialog" aria-labelledby="cbz-tour-menu-title">
+      <p id="cbz-tour-menu-title" class="cbz-tour-menu__eyebrow">EXPLORAR</p>
+      <div class="cbz-tour-menu__group">
+        <p class="cbz-tour-menu__group-title">PLANTA BAJA</p>
+        <div id="cbz-tour-menu-pb" class="cbz-tour-menu__links"></div>
+      </div>
+      <div class="cbz-tour-menu__group">
+        <p class="cbz-tour-menu__group-title">PLANTA ALTA</p>
+        <div id="cbz-tour-menu-pa" class="cbz-tour-menu__links"></div>
+      </div>
+      <button id="cbz-tour-home" class="cbz-tour-menu__home" type="button">← VOLVER AL INICIO</button>
+    </div>
+  </div>
+
+  <!-- HUD 360: espacio actual, contacto y menú -->
+  <div id="cbz-hud">
+    <div class="cbz-hud__location">
+      <h1 id="cbz-hud-title">Cargando...</h1>
+      <p id="cbz-hud-level"></p>
+    </div>
+    <button id="cbz-hud-contact" type="button">CONTACTAR</button>
+    <button id="cbz-hud-menu" type="button" aria-label="Abrir menú" aria-expanded="false">☰</button>
+  </div>
+
+  <!-- 1. Motor de visualización 360° -->
+  <script src="lib/marzipano.js"></script>
+
+  <!-- 2. Configuración de escenas (debe cargarse antes que el resolver) -->
+  <script>
+    var params = new URLSearchParams(window.location.search);
+    var property = (params.get("property") || "esplendor").toUpperCase();
+    if (property !== "ESPLENDOR" && property !== "BONANZA") property = "ESPLENDOR";
+    window.CBZ_PROPERTY = property;
+    document.write("<script src=\"../01_RECURSOS/" + property + "/config.js\"><\/script>");
+    document.write("<script src=\"../01_RECURSOS/" + property + "/assets.js\"><\/script>");
+  </script>
+  <script>
+    (function(){
+      var video = document.getElementById("cbz-hero-video");
+      if (!video) return;
+      var assets = typeof CBZ_ASSETS !== "undefined" ? CBZ_ASSETS : null;
+      var config = typeof CBZ_CONFIG !== "undefined" ? CBZ_CONFIG : null;
+      var file = (assets && assets.heroVideo) || (config && config.heroVideo);
+      if (!file) {
+        console.warn("[CBZ·Hero] No hay video MP4 configurado para " + window.CBZ_PROPERTY);
+        return;
+      }
+      video.src = "../01_RECURSOS/" + window.CBZ_PROPERTY + "/VIDEO/" + encodeURIComponent(file);
+      video.load();
+      video.addEventListener("error", function () {
+        console.error("[CBZ·Hero] No se pudo cargar el video MP4:", video.src);
+      }, { once: true });
+    })();
+  </script>
+
+  <!-- 3. Resolutor de recursos (debe cargarse antes que scenes.js) -->
+  <script src="js/resourceResolver.js"></script>
+
+  <!-- 4. Gestores de escenas y hotspots -->
+  <script src="js/scenes.js"></script>
+  <script src="js/hotspots.js"></script>
+
+  <!-- 5. Orquestador principal -->
+  <script src="js/app.js"></script>
+
+  <!-- 6. Editor de hotspots — solo activo con ?edit=1, invisible en modo normal -->
+  <script src="js/hotspotEditor.js"></script>
+
+  <!-- 7. Controlador de la pantalla HERO -->
+  <script src="js/hero.js"></script>
+
+  <!-- 8. Navegación y contenidos de la experiencia -->
+  <script src="js/experience.js"></script>
+  <script src="js/propertySelector.js"></script>
+
+
+    <script>
+      (function(){
+        if(window.CBZ_PROPERTY === "BONANZA") {
+          document.title = "Casa Bonanza - Showroom 360";
+          var titleEl = document.getElementById("cbz-hero-title");
+          if(titleEl) titleEl.innerText = "CASA BONANZA";
+          var kickers = document.querySelectorAll(".cbz-screen-kicker");
+          kickers.forEach(function(k) { k.innerText = "CASA BONANZA"; });
+        }
+      })();
+    </script>
+</body>
+</html>
+
+
+
+
+

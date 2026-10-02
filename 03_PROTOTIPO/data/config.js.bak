@@ -1,0 +1,291 @@
+﻿/**
+ * config.js — Configuración central de escenas CASA BONANZA (CBZ)
+ * ─────────────────────────────────────────────────────────────────
+ * Fuente de verdad para:
+ *   - escenas (IDs, nombres, niveles, archivos)
+ *   - parámetros iniciales de cámara
+ *   - hotspots (conexiones entre escenas)
+ *   - indicadores de plano por escena
+ *
+ * CONVENCIÓN DE RUTAS:
+ *   Las propiedades `file` y `placeholder` contienen SOLO el nombre
+ *   del archivo (sin ruta). La ruta base es responsabilidad de
+ *   resourceResolver.js → CBZ_RESOURCES.BASE.PANORAMAS
+ *
+ * PROPIEDAD `file`:
+ *   Nombre exacto del archivo (con extensión). Se usa cuando el
+ *   panorama ya existe en disco. Ej: 'CBZ_360_02_AREA_SOCIAL.png'
+ *   null → el resolver usa el basename con fallback por extensión.
+ *
+ * PROPIEDAD `basename`:
+ *   Nombre base del archivo SIN extensión. El resolver prueba
+ *   automáticamente .png → .jpg → .jpeg hasta encontrar uno válido.
+ *   Ej: 'CBZ_360_02_AREA_SOCIAL'
+ *
+ * PROPIEDAD `resolution`:
+ *   Opcional. Ancho real del panorama en píxeles. Se usa como hint
+ *   para Marzipano EquirectGeometry. Si es null → usa valor por defecto.
+ *   No bloquea la carga si no coincide con las dimensiones reales.
+ *
+ * VALORES PENDIENTES DE RENDER:
+ *   - yaw / pitch / fov inicial por escena
+ *   - yaw / pitch de cada hotspot
+ *   - planoX / planoY de cada escena
+ *
+ * Nomenclatura CBZ según MASTER_SHOWROOM.md sección 07 y 08.
+ * Hotspots según MASTER_SHOWROOM.md sección 09.
+ * Plano según MASTER_SHOWROOM.md sección 10.
+ */
+
+var CBZ_CONFIG = {
+
+  // ── PLACEHOLDER GLOBAL ────────────────────────────────────────────
+  // Solo nombre de archivo. La ruta la construye resourceResolver.js.
+  // Se usa cuando una escena no tiene file ni basename, o cuando
+  // el archivo declarado no existe en disco.
+  // null → desactivar placeholder (mostrará error claro en consola).
+  placeholder: 'CBZ_360_02_AREA_SOCIAL.png',
+
+  // ── VISOR ─────────────────────────────────────────────────────────
+  viewer: {
+    controls: {
+      mouseViewMode: 'drag'
+    }
+  },
+
+  // ── PLANOS POR NIVEL ──────────────────────────────────────────────
+  // Solo nombres de archivo. Rutas construidas por resourceResolver.
+  // Archivos pendientes hasta recibir planos arquitectónicos finales.
+  planos: {
+    PB: 'CBZ_PLANO_PB.jpg',
+    N2: 'CBZ_PLANO_N2.jpg',
+    N3: 'CBZ_PLANO_N3.jpg'
+  },
+
+  // ── ESCENAS ───────────────────────────────────────────────────────
+  // 7 escenas según MASTER sección 08.
+  scenes: [
+
+    // ── PB — Planta Baja ──────────────────────────────────────────
+
+    {
+      id:          'CBZ_360_01_ACCESO',
+      title:       'Acceso',
+      description: 'Entrada principal de Casa BONANZA.',
+      level:       'PB',
+      // file: nombre exacto del panorama ('CBZ_360_01_ACCESO.png' = aún no disponible)
+      file:        'CBZ_360_01_ACCESO.png',
+      // basename: nombre base sin extensión para resolución automática
+      basename:    'CBZ_360_01_ACCESO',
+      // resolution: hint de ancho real en px para Marzipano (null = default 4096)
+      resolution:  null,
+      initialViewParameters: {
+        yaw:   null,   // pendiente de render
+        pitch: null,   // pendiente de render
+        fov:   null    // pendiente de render
+      },
+      planoIndicador: { x: null, y: null },
+      hotspots: [
+        {
+          id:     'HS_01_a_02',
+          target: 'CBZ_360_02_AREA_SOCIAL',
+          label:  'ÁREA SOCIAL',
+          yaw:    -0.165966,
+          pitch:  0.008564
+        }
+      ]
+    },
+
+    {
+      id:          'CBZ_360_02_AREA_SOCIAL',
+      title:       'Área Social',
+      description: 'Sala principal y área de estar de Casa BONANZA.',
+      level:       'PB',
+      // Render real disponible. Nombre exacto del archivo en 01_RECURSOS/360/
+      file:        'CBZ_360_02_AREA_SOCIAL.png',
+      basename:    'CBZ_360_02_AREA_SOCIAL',
+      resolution:  4096,   // px de ancho real del panorama
+      initialViewParameters: {
+        yaw:   null,
+        pitch: null,
+        fov:   null
+      },
+      planoIndicador: { x: null, y: null },
+      hotspots: [
+        {
+          id:     'HS_02_a_01',
+          target: 'CBZ_360_01_ACCESO',
+          label:  'Acceso',
+          yaw:    -0.177674,
+          pitch:  0.030092
+        },
+        {
+          id:     'HS_02_a_03',
+          target: 'CBZ_360_03_COCINA_COMEDOR',
+          label:  'Cocina · Comedor',
+          yaw:    -0.698436,
+          pitch:  0.024919
+        },
+        {
+          id:     'HS_02_a_04',
+          target: 'CBZ_360_04_PASILLO_N2',
+          label:  'Subir a PA',
+          yaw:    0.415996,
+          pitch:  0.026493
+        },
+        {
+          id:     'HS_NEW_1789663653795',
+          target: '',
+          label:  'PATIO',
+          yaw:    2.311729,
+          pitch:  -0.007170
+        }
+      ]
+    },
+
+    {
+      id:          'CBZ_360_03_COCINA_COMEDOR',
+      title:       'Cocina · Comedor',
+      description: 'Cocina y comedor integrados de Casa BONANZA.',
+      level:       'PB',
+      file:        'CBZ_360_03_COCINA_COMEDOR.png',
+      basename:    'CBZ_360_03_COCINA_COMEDOR',
+      resolution:  null,
+      initialViewParameters: {
+        yaw:   null,
+        pitch: null,
+        fov:   null
+      },
+      planoIndicador: { x: null, y: null },
+      hotspots: [
+        {
+          id:     'HS_03_a_02',
+          target: 'CBZ_360_02_AREA_SOCIAL',
+          label:  'Área Social',
+          yaw:    -0.173904,
+          pitch:  0.019235
+        }
+      ]
+    },
+
+    // ── N2 — Planta Alta ──────────────────────────────────────────
+
+    {
+      id:          'CBZ_360_04_PASILLO_N2',
+      title:       'Pasillo N2',
+      description: 'Pasillo de circulación del Nivel 2.',
+      level:       'N2',
+      file:        'CBZ_360_04_VESTIBULO.png',
+      basename:    'CBZ_360_04_PASILLO_N2',
+      resolution:  null,
+      initialViewParameters: {
+        yaw:   null,
+        pitch: null,
+        fov:   null
+      },
+      planoIndicador: { x: null, y: null },
+      hotspots: [
+        {
+          id:     'HS_04_a_02',
+          target: 'CBZ_360_02_AREA_SOCIAL',
+          label:  'Bajar a PB',
+          yaw:    1.986570,
+          pitch:  0.351501
+        },
+        {
+          id:     'HS_04_a_05',
+          target: 'CBZ_360_05_RECAMARA_PRINCIPAL',
+          label:  'Recámara Principal',
+          yaw:    0.015004,
+          pitch:  0.122775
+        },
+        {
+          id:     'HS_04_a_06',
+          target: 'CBZ_360_06_RECAMARA_2',
+          label:  'Recámara Secundaria',
+          yaw:    -2.506422,
+          pitch:  0.133335
+        }
+      ]
+    },
+
+    {
+      id:          'CBZ_360_05_RECAMARA_PRINCIPAL',
+      title:       'Recámara Principal',
+      description: 'Recámara principal del Nivel 2.',
+      level:       'N2',
+      file:        null,
+      basename:    'CBZ_360_05_RECAMARA_PRINCIPAL',
+      resolution:  null,
+      initialViewParameters: {
+        yaw:   null,
+        pitch: null,
+        fov:   null
+      },
+      planoIndicador: { x: null, y: null },
+      hotspots: [
+        {
+          id:     'HS_05_a_04',
+          target: 'CBZ_360_04_PASILLO_N2',
+          label:  'VESTIBULO',
+          yaw:    -0.500000,
+          pitch:  0.000000
+        }
+      ]
+    },
+
+    {
+      id:          'CBZ_360_06_RECAMARA_2',
+      title:       'Recámara 2',
+      description: 'Segunda recámara del Nivel 2.',
+      level:       'N2',
+      file:        null,
+      basename:    'CBZ_360_06_RECAMARA_2',
+      resolution:  null,
+      initialViewParameters: {
+        yaw:   null,
+        pitch: null,
+        fov:   null
+      },
+      planoIndicador: { x: null, y: null },
+      hotspots: [
+        {
+          id:     'HS_06_a_04',
+          target: 'CBZ_360_04_PASILLO_N2',
+          label:  'Pasillo PA',
+          yaw:    -0.471635,
+          pitch:  0.019215
+        }
+      ]
+    },
+
+    // ── N3 — Terraza ──────────────────────────────────────────────
+
+    {
+      id:          'CBZ_360_07_TERRAZA',
+      title:       'Terraza',
+      description: 'Terraza exterior del Nivel 3.',
+      level:       'N3',
+      file:        null,
+      basename:    'CBZ_360_07_TERRAZA',
+      resolution:  null,
+      initialViewParameters: {
+        yaw:   null,
+        pitch: null,
+        fov:   null
+      },
+      planoIndicador: { x: null, y: null },
+      hotspots: [
+        {
+          id:     'HS_07_a_04',
+          target: 'CBZ_360_04_PASILLO_N2',
+          label:  'Pasillo PA',
+          yaw:    -0.500000,
+          pitch:  0.000000
+        }
+      ]
+    }
+
+  ] // fin scenes
+
+}; // fin CBZ_CONFIG
