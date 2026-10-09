@@ -22,8 +22,7 @@
   var tourMenu = document.getElementById('cbz-tour-menu');
   var tourMenuToggle = document.getElementById('cbz-hud-menu');
   var tourMenuContact = document.getElementById('cbz-hud-contact');
-  var tourMenuPb = document.getElementById('cbz-tour-menu-pb');
-  var tourMenuPa = document.getElementById('cbz-tour-menu-pa');
+  var tourMenuGroups = document.getElementById('cbz-tour-menu-groups');
   var tourMenuHome = document.getElementById('cbz-tour-home');
   var assetsLoaded = false;
   var assets = { renders: [], plans: [] };
@@ -94,39 +93,67 @@
   }
 
   function buildTourMenu() {
-    if (!tourMenuPb || !tourMenuPa || typeof CBZ_CONFIG === 'undefined') return;
+    if (!tourMenuGroups || typeof CBZ_CONFIG === 'undefined') return;
 
-    var groups = { PB: [], PA: [] };
-    var seenTargets = {};
+    var groups = [];
+    var byLevel = {};
+    (CBZ_CONFIG.scenes || []).forEach(function (sceneData, sceneIndex) {
+      var menu = sceneData.menu || {};
+      if (menu.visible === false) return;
 
-    (CBZ_CONFIG.scenes || []).forEach(function (sceneData) {
-      var sceneEntry = CBZ_SCENES[sceneData.id];
-      if (!sceneEntry || !sceneEntry.marzipanoScene) return;
-
-      (sceneData.hotspots || []).forEach(function (hotspot) {
-        var targetEntry = CBZ_SCENES[hotspot.target];
-        if (!targetEntry || !targetEntry.marzipanoScene || !hotspot.label || seenTargets[hotspot.target]) return;
-
-        seenTargets[hotspot.target] = true;
-        var group = targetEntry.data.level === 'PB' ? groups.PB : groups.PA;
-        group.push({ sceneId: hotspot.target, label: hotspot.label });
+      var level = menu.level || sceneData.level || 'OTRO';
+      var group = byLevel[level];
+      if (!group) {
+        group = byLevel[level] = {
+          level: level,
+          title: menu.levelTitle || defaultLevelTitle(level),
+          customTitle: !!menu.levelTitle && menu.levelTitle !== defaultLevelTitle(level),
+          firstIndex: sceneIndex,
+          items: []
+        };
+        groups.push(group);
+      } else if (menu.levelTitle && menu.levelTitle !== defaultLevelTitle(level)) {
+        group.title = menu.levelTitle;
+        group.customTitle = true;
+      }
+      group.items.push({
+        sceneId: sceneData.id,
+        label: menu.title || sceneData.title || sceneData.id,
+        order: Number.isFinite(Number(menu.order)) ? Number(menu.order) : sceneIndex + 1,
+        sceneIndex: sceneIndex
       });
     });
 
-    function renderGroup(container, items) {
-      container.innerHTML = '';
-      if (!items.length) {
-        var empty = document.createElement('p');
-        empty.className = 'cbz-tour-menu__empty';
-        empty.textContent = 'Sin espacios configurados';
-        container.appendChild(empty);
-        return;
-      }
-      items.forEach(function (item) { addMenuItem(container, item); });
-    }
+    tourMenuGroups.innerHTML = '';
+    groups.sort(function (a, b) { return a.firstIndex - b.firstIndex; });
+    groups.forEach(function (group) {
+      group.items.sort(function (a, b) {
+        return a.order - b.order || a.sceneIndex - b.sceneIndex;
+      });
+      var section = document.createElement('div');
+      section.className = 'cbz-tour-menu__group';
+      var heading = document.createElement('p');
+      heading.className = 'cbz-tour-menu__group-title';
+      heading.textContent = group.title;
+      var links = document.createElement('div');
+      links.className = 'cbz-tour-menu__links';
+      group.items.forEach(function (item) { addMenuItem(links, item); });
+      section.appendChild(heading);
+      section.appendChild(links);
+      tourMenuGroups.appendChild(section);
+    });
 
-    renderGroup(tourMenuPb, groups.PB);
-    renderGroup(tourMenuPa, groups.PA);
+    if (!groups.length) {
+      var empty = document.createElement('p');
+      empty.className = 'cbz-tour-menu__empty';
+      empty.textContent = 'Sin espacios configurados';
+      tourMenuGroups.appendChild(empty);
+    }
+  }
+
+  function defaultLevelTitle(level) {
+    var knownTitles = { PB: 'Planta baja', PA: 'Planta alta', N2: 'Nivel 2', N3: 'Nivel 3' };
+    return knownTitles[level] || level;
   }
 
   function showEmpty(container, message) {
@@ -146,8 +173,10 @@
       card.type = 'button';
       card.className = 'cbz-render-card';
       card.innerHTML = '<span class="cbz-render-index">0' + (index + 1) + '</span>' +
-        '<img src="' + asset.url + '" alt="" loading="lazy">' +
-        '<span class="cbz-render-name">' + titleFromFile(asset.file) + '</span>';
+        '<img alt="" loading="lazy">' +
+        '<span class="cbz-render-name"></span>';
+      card.querySelector('img').src = asset.url;
+      card.querySelector('.cbz-render-name').textContent = titleFromFile(asset.file);
       card.addEventListener('click', function () {
         openLightbox(asset.url, titleFromFile(asset.file));
       });
@@ -166,7 +195,7 @@
     }
 
     assets.plans.forEach(function (asset, index) {
-      var label = titleFromFile(asset.file).toUpperCase();
+      var label = titleFromFile(asset.file);
       var tab = document.createElement('button');
       tab.type = 'button';
       tab.className = 'cbz-plan-tab';
@@ -188,7 +217,11 @@
       tab.classList.toggle('is-active', active);
       tab.setAttribute('aria-selected', active ? 'true' : 'false');
     });
-    planViewer.innerHTML = '<img src="' + asset.url + '" alt="' + titleFromFile(asset.file) + '">';
+    var image = document.createElement('img');
+    image.src = asset.url;
+    image.alt = titleFromFile(asset.file);
+    planViewer.innerHTML = '';
+    planViewer.appendChild(image);
   }
 
   function loadAssets() {
@@ -255,8 +288,7 @@
     closeExperience();
     if (typeof window.CBZ_returnToHome === 'function') window.CBZ_returnToHome();
   });
-  if (tourMenuPb) tourMenuPb.addEventListener('click', selectTourScene);
-  if (tourMenuPa) tourMenuPa.addEventListener('click', selectTourScene);
+  if (tourMenuGroups) tourMenuGroups.addEventListener('click', selectTourScene);
 
   function selectTourScene(event) {
     var item = event.target.closest('[data-tour-scene]');

@@ -5,6 +5,13 @@
   if (!selector || !window.CBZ_SHOW_PROPERTY_SELECTOR) return;
 
   var slides = Array.prototype.slice.call(selector.querySelectorAll('[data-property]'));
+  slides.forEach(function (slide) {
+    var image = slide.querySelector('img[data-src]');
+    if (image) {
+      image.src = image.getAttribute('data-src');
+      image.removeAttribute('data-src');
+    }
+  });
   var title = document.getElementById('cbz-property-selector-title');
   var progress = Array.prototype.slice.call(selector.querySelectorAll('.cbz-property-selector__progress span'));
   var current = 0;

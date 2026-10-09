@@ -18,6 +18,8 @@
     selectedHotspot:  null,
     dragging:         false,
     registry:         {}, // sceneId → [ { hsData, mzHotspot, el } ]
+    dirtyScenes:      {}, // Solo escenas con cambios explícitos del usuario
+    dirtyVersions:    {}, // Evita limpiar cambios hechos mientras se guarda
     fileToSceneId:    {}, // Mapea archivo físico a ID de escena
     availableFiles:   [], // Lista de archivos disponibles en 01_RECURSOS/360/
     initialized:      false
@@ -63,14 +65,18 @@
 
       CBZ_EDITOR.registry[sceneData.id] = [];
 
-      hsList.forEach(function (hsData, index) {
-        var mzHotspot = mzHotspots[index];
-        if (!mzHotspot) return;
+      hsList.forEach(function (hsData) {
+        // Marzipano no garantiza que listHotspots conserve el orden del
+        // config.js. Asociar por el ID DOM evita editar/omitir otro registro.
+        var mzHotspot = mzHotspots.find(function (candidate) {
+          var element = candidate.domElement();
+          return element && element.dataset.id === String(hsData.id);
+        }) || null;
 
         var reg = {
           hsData: hsData,
           mzHotspot: mzHotspot,
-          el: mzHotspot.domElement()
+          el: mzHotspot ? mzHotspot.domElement() : null
         };
 
         CBZ_EDITOR.registry[sceneData.id].push(reg);
@@ -81,6 +87,12 @@
   // ══════════════════════════════════════════════════════════════════
   // HELPERS
   // ══════════════════════════════════════════════════════════════════
+  function _markSceneDirty(sceneId) {
+    if (!sceneId) return;
+    CBZ_EDITOR.dirtyScenes[sceneId] = true;
+    CBZ_EDITOR.dirtyVersions[sceneId] = (CBZ_EDITOR.dirtyVersions[sceneId] || 0) + 1;
+  }
+
   function _screenToCoords(screenX, screenY) {
     var entry = CBZ_SCENES[CBZ_EDITOR.activeSceneId];
     if (!entry || !entry.marzipanoScene) return null;
@@ -110,6 +122,7 @@
     reg.mzHotspot.setPosition({ yaw: yaw, pitch: pitch });
     reg.hsData.yaw = yaw;
     reg.hsData.pitch = pitch;
+    _markSceneDirty(CBZ_EDITOR.activeSceneId);
     _updatePanel();
   }
 
@@ -199,6 +212,7 @@
     
     if (!CBZ_EDITOR.registry[sceneId]) CBZ_EDITOR.registry[sceneId] = [];
     CBZ_EDITOR.registry[sceneId].push(reg);
+    _markSceneDirty(sceneId);
 
     _attachDragToHotspot(reg);
     _selectHotspot(reg);
@@ -219,6 +233,7 @@
     var idx = CBZ_EDITOR.registry[sceneId].indexOf(reg);
     if (idx !== -1) {
       CBZ_EDITOR.registry[sceneId].splice(idx, 1);
+      _markSceneDirty(sceneId);
     }
 
     CBZ_EDITOR.selectedHotspot = null;
@@ -230,6 +245,133 @@
   // PANEL UI DEL EDITOR
   // ══════════════════════════════════════════════════════════════════
   var _panel, _elScene, _elList, _elName, _elTarget, _elYaw, _elPitch, _btnDelete;
+  var _menuVisible, _menuTitle, _menuLevel, _menuLevelTitle, _menuOrder, _menuId, _menuFile;
+  var _menuPreview, _menuSaveStatus;
+
+  function _defaultLevelTitle(level) {
+    var titles = { PB: 'Planta baja', PA: 'Planta alta', N2: 'Nivel 2', N3: 'Nivel 3' };
+    return titles[level] || level || 'Sin nivel';
+  }
+
+  function _initializeSceneMenus() {
+    CBZ_CONFIG.scenes.forEach(function (scene, index) {
+      if (!scene.menu || typeof scene.menu !== 'object') scene.menu = {};
+      if (scene.menu.visible === undefined) scene.menu.visible = true;
+      if (!scene.menu.title) scene.menu.title = scene.title || scene.id;
+      if (!scene.menu.level) scene.menu.level = scene.level || 'PB';
+      if (!scene.menu.levelTitle) scene.menu.levelTitle = _defaultLevelTitle(scene.menu.level);
+      if (!Number.isFinite(Number(scene.menu.order)) || Number(scene.menu.order) < 1) scene.menu.order = index + 1;
+      scene.menu.order = Number(scene.menu.order);
+    });
+  }
+
+  function _activeSceneData() {
+    var id = CBZ_EDITOR.activeSceneId;
+    for (var i = 0; i < CBZ_CONFIG.scenes.length; i++) {
+      if (CBZ_CONFIG.scenes[i].id === id) return CBZ_CONFIG.scenes[i];
+    }
+    return null;
+  }
+
+  function _updateMenuPreview() {
+    if (!_menuPreview) return;
+    _menuPreview.innerHTML = '';
+    var groups = [];
+    var byLevel = {};
+    CBZ_CONFIG.scenes.forEach(function (scene, index) {
+      var menu = scene.menu || {};
+      if (menu.visible === false) return;
+      var level = menu.level || scene.level || 'OTRO';
+      var group = byLevel[level];
+      if (!group) {
+        group = byLevel[level] = { level: level, title: menu.levelTitle || _defaultLevelTitle(level), firstIndex: index, items: [] };
+        groups.push(group);
+      } else if (menu.levelTitle && menu.levelTitle !== _defaultLevelTitle(level)) {
+        group.title = menu.levelTitle;
+      }
+      group.items.push({ title: menu.title || scene.title || scene.id, order: Number(menu.order) || index + 1, index: index });
+    });
+    groups.sort(function (a, b) { return a.firstIndex - b.firstIndex; });
+    groups.forEach(function (group) {
+      group.items.sort(function (a, b) { return a.order - b.order || a.index - b.index; });
+      var section = document.createElement('div');
+      section.className = 'cbz-ed-preview-group';
+      var heading = document.createElement('div');
+      heading.className = 'cbz-ed-preview-heading';
+      heading.textContent = group.title;
+      section.appendChild(heading);
+      group.items.forEach(function (item) {
+        var row = document.createElement('div');
+        row.className = 'cbz-ed-preview-item';
+        row.textContent = item.title;
+        section.appendChild(row);
+      });
+      _menuPreview.appendChild(section);
+    });
+    if (!groups.length) _menuPreview.textContent = 'No hay espacios visibles en el menú.';
+  }
+
+  function _updateMenuEditor() {
+    var scene = _activeSceneData();
+    if (!scene || !_menuVisible) return;
+    var menu = scene.menu;
+    _menuVisible.checked = menu.visible !== false;
+    _menuTitle.value = menu.title || '';
+    _menuLevel.value = menu.level || '';
+    _menuLevelTitle.value = menu.levelTitle || '';
+    _menuOrder.value = menu.order;
+    _menuId.textContent = scene.id;
+    _menuFile.textContent = scene.file || scene.basename || '(sin archivo configurado)';
+    _menuTitle.disabled = !_menuVisible.checked;
+    _menuLevel.disabled = !_menuVisible.checked;
+    _menuLevelTitle.disabled = !_menuVisible.checked;
+    _menuOrder.disabled = !_menuVisible.checked;
+    _updateMenuPreview();
+  }
+
+  function _saveSceneMenus() {
+    var button = document.getElementById('cbz-ed-menu-save');
+    var status = _menuSaveStatus;
+    var data = {};
+    CBZ_CONFIG.scenes.forEach(function (scene) {
+      var menu = scene.menu || {};
+      data[scene.id] = {
+        visible: menu.visible !== false,
+        title: menu.title || scene.title || scene.id,
+        level: menu.level || scene.level || 'PB',
+        levelTitle: menu.levelTitle || _defaultLevelTitle(menu.level || scene.level),
+        order: Math.max(1, Math.floor(Number(menu.order) || 1))
+      };
+    });
+
+    button.disabled = true;
+    button.textContent = 'GUARDANDO...';
+    status.textContent = '';
+    var property = encodeURIComponent(window.CBZ_PROPERTY || 'ESPLENDOR');
+    fetch('../api/save-scene-menu?property=' + property, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    })
+    .then(function (response) { return response.json(); })
+    .then(function (result) {
+      button.disabled = false;
+      button.textContent = 'GUARDAR LISTA DE ESPACIOS';
+      if (result.ok) {
+        status.textContent = '✓ LISTA GUARDADA EN ' + (window.CBZ_PROPERTY || 'ESPLENDOR');
+        status.className = 'cbz-ed-status-ok';
+      } else {
+        status.textContent = '✗ ' + (result.error || 'No se pudo guardar la lista.');
+        status.className = 'cbz-ed-status-error';
+      }
+    })
+    .catch(function (error) {
+      button.disabled = false;
+      button.textContent = 'GUARDAR LISTA DE ESPACIOS';
+      status.textContent = '✗ Error: ' + error.message;
+      status.className = 'cbz-ed-status-error';
+    });
+  }
 
   function _buildPanel() {
     _panel = document.createElement('div');
@@ -239,7 +381,7 @@
     var targetOptions = '<option value="">-- Seleccionar --</option>';
     CBZ_EDITOR.availableFiles.forEach(function(file) {
       var targetSceneId = CBZ_EDITOR.fileToSceneId[file] || '';
-      var targetValue = targetSceneId || file;
+      var targetValue = targetSceneId || file.replace(/\.png$/i, '');
       targetOptions += '<option value="' + targetValue + '">' + file + '</option>';
     });
 
@@ -260,6 +402,20 @@
       '  <select id="cbz-ed-scene-select" class="cbz-ed-input">',
              sceneOptions,
       '  </select>',
+      '</div>',
+      '<div class="cbz-ed-section cbz-ed-menu-editor">',
+      '  <div class="cbz-ed-label">LISTA DE ESPACIOS — ESCENA SELECCIONADA</div>',
+      '  <div class="cbz-ed-reference"><span>ID</span><code id="cbz-ed-menu-id"></code></div>',
+      '  <div class="cbz-ed-reference"><span>ARCHIVO 360</span><code id="cbz-ed-menu-file"></code></div>',
+      '  <label class="cbz-ed-check"><input id="cbz-ed-menu-visible" type="checkbox"> MOSTRAR EN MENÚ</label>',
+      '  <label class="cbz-ed-menu-field">NOMBRE VISIBLE<input id="cbz-ed-menu-title" class="cbz-ed-input" type="text"></label>',
+      '  <label class="cbz-ed-menu-field">NIVEL / CÓDIGO<input id="cbz-ed-menu-level" class="cbz-ed-input" type="text" list="cbz-ed-level-options"><datalist id="cbz-ed-level-options"><option value="PB"><option value="PA"><option value="N2"><option value="N3"><option value="TERRAZA"></datalist></label>',
+      '  <label class="cbz-ed-menu-field">NOMBRE DEL GRUPO<input id="cbz-ed-menu-level-title" class="cbz-ed-input" type="text"></label>',
+      '  <label class="cbz-ed-menu-field">ORDEN<input id="cbz-ed-menu-order" class="cbz-ed-input" type="number" min="1" step="1"></label>',
+      '  <div class="cbz-ed-label cbz-ed-preview-label">PREVISUALIZACIÓN DE LA LISTA</div>',
+      '  <div id="cbz-ed-menu-preview"></div>',
+      '  <button id="cbz-ed-menu-save" class="cbz-ed-btn-primary" type="button">GUARDAR LISTA DE ESPACIOS</button>',
+      '  <div id="cbz-ed-menu-save-status"></div>',
       '</div>',
       '<div class="cbz-ed-section">',
       '  <div class="cbz-ed-label">HOTSPOTS — ESCENA ACTIVA</div>',
@@ -303,12 +459,57 @@
     _elYaw      = document.getElementById('cbz-ed-yaw');
     _elPitch    = document.getElementById('cbz-ed-pitch');
     _btnDelete  = document.getElementById('cbz-ed-delete');
+    _menuVisible = document.getElementById('cbz-ed-menu-visible');
+    _menuTitle = document.getElementById('cbz-ed-menu-title');
+    _menuLevel = document.getElementById('cbz-ed-menu-level');
+    _menuLevelTitle = document.getElementById('cbz-ed-menu-level-title');
+    _menuOrder = document.getElementById('cbz-ed-menu-order');
+    _menuId = document.getElementById('cbz-ed-menu-id');
+    _menuFile = document.getElementById('cbz-ed-menu-file');
+    _menuPreview = document.getElementById('cbz-ed-menu-preview');
+    _menuSaveStatus = document.getElementById('cbz-ed-menu-save-status');
 
     document.getElementById('cbz-ed-add').addEventListener('click', _addHotspot);
     _btnDelete.addEventListener('click', _deleteHotspot);
     document.getElementById('cbz-ed-save').addEventListener('click', _saveToConfig);
+    document.getElementById('cbz-ed-menu-save').addEventListener('click', _saveSceneMenus);
     _elScene.addEventListener('change', function (event) {
       CBZ_switchScene(event.target.value);
+    });
+
+    _menuVisible.addEventListener('change', function (event) {
+      var scene = _activeSceneData();
+      if (!scene) return;
+      scene.menu.visible = event.target.checked;
+      _updateMenuEditor();
+    });
+    _menuTitle.addEventListener('input', function (event) {
+      var scene = _activeSceneData();
+      if (scene) scene.menu.title = event.target.value;
+      _updateMenuPreview();
+    });
+    _menuLevel.addEventListener('input', function (event) {
+      var scene = _activeSceneData();
+      if (scene) {
+        var previousLevel = scene.menu.level;
+        var usesDefaultTitle = !scene.menu.levelTitle || scene.menu.levelTitle === _defaultLevelTitle(previousLevel);
+        scene.menu.level = event.target.value.trim() || 'OTRO';
+        if (usesDefaultTitle) {
+          scene.menu.levelTitle = _defaultLevelTitle(scene.menu.level);
+          _menuLevelTitle.value = scene.menu.levelTitle;
+        }
+      }
+      _updateMenuPreview();
+    });
+    _menuLevelTitle.addEventListener('input', function (event) {
+      var scene = _activeSceneData();
+      if (scene) scene.menu.levelTitle = event.target.value || scene.menu.level;
+      _updateMenuPreview();
+    });
+    _menuOrder.addEventListener('input', function (event) {
+      var scene = _activeSceneData();
+      if (scene) scene.menu.order = Math.max(1, Math.floor(Number(event.target.value) || 1));
+      _updateMenuPreview();
     });
 
     // Actualizar nombre en tiempo real
@@ -318,6 +519,7 @@
         // Actualizar visualmente en el DOM
         var labelEl = CBZ_EDITOR.selectedHotspot.el.querySelector('.cbz-hotspot__label');
         if (labelEl) labelEl.textContent = e.target.value;
+        _markSceneDirty(CBZ_EDITOR.activeSceneId);
         _updateHotspotList();
       }
     });
@@ -326,6 +528,7 @@
     _elTarget.addEventListener('change', function(e) {
       if (CBZ_EDITOR.selectedHotspot) {
         CBZ_EDITOR.selectedHotspot.hsData.target = e.target.value;
+        _markSceneDirty(CBZ_EDITOR.activeSceneId);
       }
     });
   }
@@ -363,6 +566,7 @@
     var sel = CBZ_EDITOR.selectedHotspot;
 
     if (_elScene) _elScene.value = CBZ_EDITOR.activeSceneId || '';
+    _updateMenuEditor();
 
     if (sel) {
       _elName.disabled = false;
@@ -389,10 +593,26 @@
   // EXPORTAR Y GUARDAR
   // ══════════════════════════════════════════════════════════════════
   function _buildExportData() {
+    // Los controles editan el registro seleccionado en vivo. Sincronizarlos
+    // justo antes de serializar también cubre el guardado inmediato tras editar.
+    var selected = CBZ_EDITOR.selectedHotspot;
+    if (selected) {
+      if (_elName) selected.hsData.label = _elName.value;
+      if (_elTarget && (_elTarget.value || !selected.hsData.target)) {
+        selected.hsData.target = _elTarget.value;
+      }
+    }
+
     var out = {};
-    CBZ_CONFIG.scenes.forEach(function (scene) {
-      var regs = CBZ_EDITOR.registry[scene.id] || [];
-      out[scene.id] = regs.map(function(reg) {
+    var sceneDefinitions = [];
+    Object.keys(CBZ_EDITOR.dirtyScenes).forEach(function (sceneId) {
+      var regs = (CBZ_EDITOR.registry[sceneId] || []).slice();
+      // El hotspot seleccionado es la fuente visible del editor. No permitir
+      // que una referencia de registro desfasada lo excluya del payload.
+      if (sceneId === CBZ_EDITOR.activeSceneId && selected && regs.indexOf(selected) === -1) {
+        regs.push(selected);
+      }
+      out[sceneId] = regs.map(function(reg) {
         return {
           id: reg.hsData.id,
           target: reg.hsData.target,
@@ -401,7 +621,27 @@
           pitch: reg.hsData.pitch
         };
       });
+
+      var isConfigured = CBZ_CONFIG.scenes.some(function (scene) {
+        return scene.id === sceneId;
+      });
+      var activeEntry = CBZ_SCENES[sceneId];
+      if (!isConfigured && activeEntry && activeEntry.data) {
+        var sceneData = activeEntry.data;
+        sceneDefinitions.push({
+          id: sceneData.id,
+          title: sceneData.title || sceneData.id,
+          description: sceneData.description || '',
+          level: sceneData.level || 'PB',
+          file: sceneData.file,
+          basename: sceneData.basename || String(sceneData.file || '').replace(/\.(png|jpe?g|webp)$/i, ''),
+          resolution: sceneData.resolution == null ? null : sceneData.resolution,
+          initialViewParameters: sceneData.initialViewParameters || null,
+          hotspots: out[sceneId]
+        });
+      }
     });
+    if (sceneDefinitions.length) out.__sceneDefinitions = sceneDefinitions;
     return out;
   }
 
@@ -416,23 +656,44 @@
     status.className = '';
 
     var property = encodeURIComponent(window.CBZ_PROPERTY || 'ESPLENDOR');
+    if (!Object.keys(data).some(function (key) { return key !== '__sceneDefinitions'; })) {
+      btn.disabled = false;
+      btn.textContent = 'GUARDAR EN CONFIG.JS';
+      status.textContent = 'No hay cambios pendientes.';
+      return;
+    }
+    var savedVersions = {};
+    Object.keys(data).forEach(function (sceneId) {
+      if (sceneId !== '__sceneDefinitions') savedVersions[sceneId] = CBZ_EDITOR.dirtyVersions[sceneId];
+    });
     fetch('../api/save-hotspots?property=' + property, {
       method:  'POST',
       headers: { 'Content-Type': 'application/json' },
       body:    JSON.stringify(data)
     })
-    .then(function (r) { return r.json(); })
+    .then(function (r) {
+      return r.json().catch(function () {
+        throw new Error('El servidor devolvió una respuesta vacía o no válida (HTTP ' + r.status + ')');
+      }).then(function (res) {
+        if (!r.ok || !res.ok) throw new Error(res.error || ('El servidor respondió HTTP ' + r.status));
+        if (res.persisted !== true) throw new Error('El servidor no confirmó la persistencia de los cambios.');
+        return res;
+      });
+    })
     .then(function (res) {
       btn.disabled = false;
       btn.textContent = 'GUARDAR EN CONFIG.JS';
 
-      if (res.ok) {
-        status.textContent = '✓ CONFIG.JS ACTUALIZADO\nEscenas modificadas: ' + res.updated;
-        status.className = 'cbz-ed-status-ok';
-      } else {
-        status.textContent = '✗ ERROR\n' + (res.error || 'Respuesta inesperada.');
-        status.className = 'cbz-ed-status-error';
-      }
+      status.textContent = res.updated === 0
+        ? '✓ CONFIG.JS VERIFICADO\nSin cambios pendientes.'
+        : '✓ CONFIG.JS ACTUALIZADO Y VERIFICADO\nEscenas modificadas: ' + res.updated;
+      status.className = 'cbz-ed-status-ok';
+      Object.keys(savedVersions).forEach(function (sceneId) {
+        if (CBZ_EDITOR.dirtyVersions[sceneId] === savedVersions[sceneId]) {
+          delete CBZ_EDITOR.dirtyScenes[sceneId];
+          delete CBZ_EDITOR.dirtyVersions[sceneId];
+        }
+      });
     })
     .catch(function (err) {
       btn.disabled = false;
@@ -474,6 +735,18 @@
       '.cbz-ed-btn-primary { background: rgba(197,160,89,0.15) !important; border-color: rgba(197,160,89,0.5) !important; color: #c5a059 !important; font-weight: 600; }',
       '.cbz-ed-btn-primary:hover { background: rgba(197,160,89,0.3) !important; border-color: #c5a059 !important; }',
       '#cbz-ed-save-status { font-size: 9px; line-height: 1.5; white-space: pre-line; padding: 6px 0 0; min-height: 0; }',
+      '.cbz-ed-reference { display: flex; flex-direction: column; gap: 3px; margin: 0 0 7px; color: rgba(255,255,255,0.4); font-size: 8px; letter-spacing: 0.12em; }',
+      '.cbz-ed-reference code { color: rgba(255,255,255,0.78); font-size: 9px; letter-spacing: 0; overflow-wrap: anywhere; }',
+      '.cbz-ed-check { display: flex; align-items: center; gap: 7px; margin: 10px 0; color: #c5a059; font-size: 9px; cursor: pointer; }',
+      '.cbz-ed-menu-field { display: block; margin: 9px 0; color: rgba(255,255,255,0.5); font-size: 8px; letter-spacing: 0.12em; }',
+      '.cbz-ed-menu-field .cbz-ed-input { box-sizing: border-box; }',
+      '.cbz-ed-menu-field .cbz-ed-input:disabled { opacity: 0.35; }',
+      '.cbz-ed-preview-label { margin-top: 16px; }',
+      '#cbz-ed-menu-preview { max-height: 180px; overflow-y: auto; margin-bottom: 10px; padding: 7px 9px; border: 1px solid rgba(255,255,255,0.1); border-radius: 3px; }',
+      '.cbz-ed-preview-group { margin-bottom: 9px; }',
+      '.cbz-ed-preview-heading { padding-bottom: 5px; border-bottom: 1px solid rgba(255,255,255,0.14); color: #c5a059; font-size: 8px; letter-spacing: 0.14em; }',
+      '.cbz-ed-preview-item { padding: 5px 0 0 4px; color: rgba(255,255,255,0.75); font-size: 10px; letter-spacing: 0.04em; }',
+      '#cbz-ed-menu-save-status { min-height: 12px; font-size: 9px; line-height: 1.5; }',
       '.cbz-ed-status-ok { color: #6bc46b; }',
       '.cbz-ed-status-error { color: #e06060; }'
     ].join('\n');
@@ -497,6 +770,7 @@
 
     // Primero, construir mapeo
     _buildFileMapping();
+    _initializeSceneMenus();
     
     // Luego, obtener archivos disponibles del servidor
     _fetchAvailableRenders(function() {
@@ -506,6 +780,7 @@
       _injectStyles();
       _buildPanel();
       _updateHotspotList();
+      _updatePanel();
     });
   }
 

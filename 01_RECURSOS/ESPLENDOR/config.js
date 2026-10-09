@@ -73,6 +73,7 @@ var CBZ_CONFIG = {
       title:       'Acceso',
       description: 'Entrada principal de Casa BONANZA.',
       level:       'PB',
+      menu: {"visible":true,"title":"COCHERA","level":"PB","levelTitle":"Planta baja","order":1},
       // file: nombre exacto del panorama ('CBZ_360_01_ACCESO.png' = aún no disponible)
       file:        'CBZ_360_01_ACCESO.png',
       // basename: nombre base sin extensión para resolución automática
@@ -87,11 +88,11 @@ var CBZ_CONFIG = {
       planoIndicador: { x: null, y: null },
       hotspots: [
         {
-          id:     'HS_01_a_02',
-          target: 'CBZ_360_02_AREA_SOCIAL',
-          label:  'ÁREA SOCIAL',
-          yaw:    -0.125403,
-          pitch:  -0.024541
+          id:     "HS_01_a_02",
+          target: "CBZ_360_12_ACCESO_ENTRADA",
+          label:  "ACCESO",
+          yaw:    -0.13548167980829184,
+          pitch:  -0.02513090018300801
         }
       ]
     },
@@ -101,6 +102,7 @@ var CBZ_CONFIG = {
       title:       'Área Social',
       description: 'Sala principal y área de estar de Casa BONANZA.',
       level:       'PB',
+      menu: {"visible":true,"title":"SALA-COMEDOR","level":"PB","levelTitle":"Planta baja","order":2},
       // Render real disponible. Nombre exacto del archivo en 01_RECURSOS/360/
       file:        'CBZ_360_02_AREA_SOCIAL.png',
       basename:    'CBZ_360_02_AREA_SOCIAL',
@@ -113,32 +115,32 @@ var CBZ_CONFIG = {
       planoIndicador: { x: null, y: null },
       hotspots: [
         {
-          id:     'HS_02_a_01',
-          target: 'CBZ_360_01_ACCESO',
-          label:  'Acceso',
-          yaw:    0.554455,
-          pitch:  0.003210
+          id:     "HS_02_a_01",
+          target: "CBZ_360_12_ACCESO_ENTRADA",
+          label:  "VESTIBULO DE ACCESO",
+          yaw:    0.08474,
+          pitch:  0.002597
         },
         {
-          id:     'HS_02_a_03',
-          target: 'CBZ_360_03_COCINA_COMEDOR',
-          label:  'Cocina · Comedor',
-          yaw:    0.101009,
-          pitch:  0.036868
+          id:     "HS_02_a_03",
+          target: "CBZ_360_03_COCINA_COMEDOR",
+          label:  "Cocina · Comedor",
+          yaw:    -0.370688,
+          pitch:  -0.014822
         },
         {
-          id:     'HS_02_a_04',
-          target: 'CBZ_360_04_VESTIBULO',
-          label:  'Subir a PA',
-          yaw:    1.204784,
-          pitch:  -0.089334
+          id:     "HS_02_a_04",
+          target: "CBZ_360_04_VESTIBULO",
+          label:  "Subir a PA",
+          yaw:    0.7325384017290126,
+          pitch:  -0.09231883662461371
         },
         {
-          id:     'HS_NEW_1789663653795',
-          target: 'CBZ_360_05_PATIO',
-          label:  'PATIO',
-          yaw:    3.025921,
-          pitch:  0.085873
+          id:     "HS_NEW_1789663653795",
+          target: "CBZ_360_05_PATIO",
+          label:  "JARDIN",
+          yaw:    2.541546,
+          pitch:  -0.037347
         }
       ]
     },
@@ -148,6 +150,7 @@ var CBZ_CONFIG = {
       title:       'Cocina · Comedor',
       description: 'Cocina y comedor integrados de Casa BONANZA.',
       level:       'PB',
+      menu: {"visible":true,"title":"COCINA","level":"PB","levelTitle":"Planta baja","order":3},
       file:        'CBZ_360_03_COCINA_COMEDOR.png',
       basename:    'CBZ_360_03_COCINA_COMEDOR',
       resolution:  null,
@@ -159,18 +162,18 @@ var CBZ_CONFIG = {
       planoIndicador: { x: null, y: null },
       hotspots: [
         {
-          id:     'HS_03_a_02',
-          target: 'CBZ_360_02_AREA_SOCIAL',
-          label:  'Área Social',
-          yaw:    -0.679194,
-          pitch:  0.052833
+          id:     "HS_03_a_02",
+          target: "CBZ_360_02_AREA_SOCIAL",
+          label:  "SALA-COMEDOR",
+          yaw:    -0.8191779218753972,
+          pitch:  0.014704062761198955
         },
         {
-          id:     'HS_NEW_1790862923356',
-          target: 'CBZ_360_04_VESTIBULO',
-          label:  'SUBIR A PA',
-          yaw:    -1.798991,
-          pitch:  -0.066854
+          id:     "HS_NEW_1790862923356",
+          target: "CBZ_360_04_VESTIBULO",
+          label:  "SUBIR A PA",
+          yaw:    -1.868648,
+          pitch:  -0.090977
         }
       ]
     },
@@ -182,6 +185,7 @@ var CBZ_CONFIG = {
       title:       'Vestíbulo',
       description: 'Pasillo de circulación del Nivel 2.',
       level:       'N2',
+      menu: {"visible":false,"title":"Subir a PA","level":"N2","levelTitle":"Nivel 2","order":1},
       file:        'CBZ_360_04_VESTIBULO.png',
       basename:    'CBZ_360_04_PASILLO_N2',
       resolution:  null,
@@ -193,25 +197,39 @@ var CBZ_CONFIG = {
       planoIndicador: { x: null, y: null },
       hotspots: [
         {
-          id:     'HS_04_a_02',
-          target: 'CBZ_360_02_AREA_SOCIAL',
-          label:  'Bajar a PB',
-          yaw:    2.705996,
-          pitch:  0.225901
+          id:     "HS_04_a_02",
+          target: "CBZ_360_02_AREA_SOCIAL",
+          label:  "Bajar a PB",
+          yaw:    0.477999,
+          pitch:  0.523114
         },
         {
-          id:     'HS_04_a_05',
-          target: 'CBZ_360_06_RECAMARA_PRINCIPAL',
-          label:  'Recámara Principal',
-          yaw:    0.475002,
-          pitch:  0.193935
+          id:     "HS_04_a_05",
+          target: "CBZ_360_06_RECAMARA_PRINCIPAL",
+          label:  "Recámara Principal",
+          yaw:    -1.8349806572254828,
+          pitch:  0.16017479833188375
         },
         {
-          id:     'HS_04_a_06',
-          target: 'CBZ_360_09_RECAMARA_SECUNDARIA',
-          label:  'Recámara Secundaria',
-          yaw:    -2.157309,
-          pitch:  0.150603
+          id:     "HS_04_a_06",
+          target: "CBZ_360_09_RECAMARA_SECUNDARIA",
+          label:  "Recámara Secundaria",
+          yaw:    1.8679081164114093,
+          pitch:  0.1181052467452659
+        },
+        {
+          id:     "HS_NEW_1791298457153",
+          target: "CBZ_360_09_RECAMARA_SECUNDARIA_02.png",
+          label:  "RECAMARA SECUNDARIA",
+          yaw:    1.2193822840884447,
+          pitch:  0.12043224381631035
+        },
+        {
+          id:     "HS_NEW_1791298499130",
+          target: "CBZ_360_11_BAÑO_SECUNDARIO.png",
+          label:  "BAÑO SECUNDARIO",
+          yaw:    2.8280516844187638,
+          pitch:  0.1275526560421767
         }
       ]
     },
@@ -221,6 +239,7 @@ var CBZ_CONFIG = {
       title:       'Patio',
       description: 'Patio de Casa ESPLENDOR.',
       level:       'PB',
+      menu: {"visible":true,"title":"JARDIN TRASERO","level":"PB","levelTitle":"Planta baja","order":4},
       file:        'CBZ_360_05_PATIO.png',
       basename:    'CBZ_360_05_PATIO',
       resolution:  null,
@@ -233,10 +252,10 @@ var CBZ_CONFIG = {
       hotspots: [
         {
           id:     'HS_05_a_04',
-          target: 'CBZ_360_04_VESTIBULO',
-          label:  'VESTIBULO',
-          yaw:    -0.500000,
-          pitch:  0.000000
+          target: 'CBZ_360_02_AREA_SOCIAL',
+          label:  'SALA-COMEDOR',
+          yaw:    1.050504,
+          pitch:  -0.021091
         }
       ]
     },
@@ -246,6 +265,7 @@ var CBZ_CONFIG = {
       title:       'Recámara Principal',
       description: 'Recámara principal del Nivel 2.',
       level:       'PA',
+      menu: {"visible":true,"title":"RECÁMARA PRINCIPAL","level":"PA","levelTitle":"Planta alta","order":1},
       file:        'CBZ_360_06_RECAMARA_PRINCIPAL.png',
       basename:    'CBZ_360_06_RECAMARA_PRINCIPAL',
       resolution:  null,
@@ -257,25 +277,25 @@ var CBZ_CONFIG = {
       planoIndicador: { x: null, y: null },
       hotspots: [
         {
-          id:     'HS_06_a_04',
-          target: 'CBZ_360_04_VESTIBULO',
-          label:  'VESTIBULO',
-          yaw:    2.089245,
-          pitch:  0.199143
+          id:     "HS_06_a_04",
+          target: "CBZ_360_04_VESTIBULO",
+          label:  "VESTIBULO",
+          yaw:    2.643347,
+          pitch:  0.105317
         },
         {
-          id:     'HS_NEW_1790863017882',
-          target: 'CBZ_08_VESTIDOR_PRINCIPAL',
-          label:  'VESTIDOR',
-          yaw:    -0.219043,
-          pitch:  0.025961
+          id:     "HS_NEW_1790863017882",
+          target: "CBZ_08_VESTIDOR_PRINCIPAL",
+          label:  "VESTIDOR",
+          yaw:    0.31654918302453794,
+          pitch:  -0.035087289678127576
         },
         {
-          id:     'HS_NEW_1790863035845',
-          target: 'CBZ_360_10_BALCON_PRINCIPAL',
-          label:  'BALCON',
-          yaw:    -1.205136,
-          pitch:  0.033266
+          id:     "HS_NEW_1790863035845",
+          target: "CBZ_360_10_BALCON_PRINCIPAL",
+          label:  "BALCON",
+          yaw:    -0.6683541929904706,
+          pitch:  0.016969341603434884
         }
       ]
     },
@@ -287,6 +307,7 @@ var CBZ_CONFIG = {
       title:       'Baño Principal',
       description: 'Baño principal del Nivel 2.',
       level:       'PA',
+      menu: {"visible":true,"title":"BAÑO COMPLETO","level":"PA","levelTitle":"Planta alta","order":4},
       file:        'CBZ_360_07_BAÑO_PRINCIPAL.png',
       basename:    'CBZ_360_07_BAÑO_PRINCIPAL',
       resolution:  null,
@@ -298,11 +319,18 @@ var CBZ_CONFIG = {
       planoIndicador: { x: null, y: null },
       hotspots: [
         {
-          id:     'HS_07_a_04',
-          target: 'CBZ_08_VESTIDOR_PRINCIPAL',
-          label:  'VESTIDOR',
-          yaw:    -1.798798,
-          pitch:  0.063181
+          id:     "HS_07_a_04",
+          target: "CBZ_08_VESTIDOR_PRINCIPAL",
+          label:  "VESTIDOR",
+          yaw:    -1.7451870881043057,
+          pitch:  0.13726337459110383
+        },
+        {
+          id:     "HS_NEW_1791298548235",
+          target: "CBZ_10_REGADERA_PRINCIPAL.png",
+          label:  "REGADERA",
+          yaw:    -0.5674177118141603,
+          pitch:  0.021497068492211113
         }
       ]
     },
@@ -312,6 +340,7 @@ var CBZ_CONFIG = {
       title:       'Vestidor Principal',
       description: 'Vestidor principal del Nivel 2.',
       level:       'PA',
+      menu: {"visible":true,"title":"VESTIDOR","level":"PA","levelTitle":"Planta alta","order":3},
       file:        'CBZ_08_VESTIDOR_PRINCIPAL.png',
       basename:    'CBZ_08_VESTIDOR_PRINCIPAL',
       resolution:  null,
@@ -319,18 +348,18 @@ var CBZ_CONFIG = {
       planoIndicador: { x: null, y: null },
       hotspots: [
         {
-          id:     'HS_NEW_1790863078066',
-          target: 'CBZ_360_06_RECAMARA_PRINCIPAL',
-          label:  'RECAMARA PRINCIPAL',
-          yaw:    -2.132150,
-          pitch:  0.098658
+          id:     "HS_NEW_1790863078066",
+          target: "CBZ_360_06_RECAMARA_PRINCIPAL",
+          label:  "RECAMARA PRINCIPAL",
+          yaw:    -2.103283641614068,
+          pitch:  0.1300390314996811
         },
         {
-          id:     'HS_NEW_1790863097637',
-          target: 'CBZ_360_07_BAÑO_PRINCIPAL',
-          label:  'BAÑO',
-          yaw:    1.015512,
-          pitch:  0.019672
+          id:     "HS_NEW_1790863097637",
+          target: "CBZ_360_07_BAÑO_PRINCIPAL",
+          label:  "BAÑO",
+          yaw:    1.0470190356363034,
+          pitch:  0.045094361270702876
         }
       ]
     },
@@ -340,6 +369,7 @@ var CBZ_CONFIG = {
       title:       'Recámara Secundaria',
       description: 'Recámara secundaria del Nivel 2.',
       level:       'PA',
+      menu: {"visible":true,"title":"RECAMARA SECUNDARIA 01","level":"PA","levelTitle":"Planta alta","order":2},
       file:        'CBZ_360_09_RECAMARA_SECUNDARIA.png',
       basename:    'CBZ_360_09_RECAMARA_SECUNDARIA',
       resolution:  null,
@@ -347,11 +377,11 @@ var CBZ_CONFIG = {
       planoIndicador: { x: null, y: null },
       hotspots: [
         {
-          id:     'HS_NEW_1790862970011',
-          target: 'CBZ_360_04_VESTIBULO',
-          label:  'VESTIBULO',
-          yaw:    -2.760644,
-          pitch:  0.492536
+          id:     "HS_NEW_1790862970011",
+          target: "CBZ_360_04_VESTIBULO",
+          label:  "VESTIBULO",
+          yaw:    -2.7413849507525008,
+          pitch:  0.24359068946065676
         }
       ]
     },
@@ -361,6 +391,7 @@ var CBZ_CONFIG = {
       title:       'Balcón Principal',
       description: 'Balcón principal de Casa ESPLENDOR.',
       level:       'N3',
+      menu: {"visible":true,"title":"BALCON","level":"PA","levelTitle":"Planta alta","order":1},
       file:        'CBZ_360_10_BALCON_PRINCIPAL.png',
       basename:    'CBZ_360_10_BALCON_PRINCIPAL',
       resolution:  null,
@@ -368,15 +399,135 @@ var CBZ_CONFIG = {
       planoIndicador: { x: null, y: null },
       hotspots: [
         {
-          id:     'HS_NEW_1790863055621',
-          target: 'CBZ_360_06_RECAMARA_PRINCIPAL',
-          label:  'RECAMARA PRINCIPAL',
-          yaw:    -0.172786,
-          pitch:  0.071724
+          id:     "HS_NEW_1790863055621",
+          target: "CBZ_360_06_RECAMARA_PRINCIPAL",
+          label:  "RECAMARA PRINCIPAL",
+          yaw:    1.6430214041082891,
+          pitch:  0.1261928809829378
         }
       ]
     }
+,
 
+    {
+      menu: {"visible":false,"title":"CBZ_360_12_ACCESO_ENTRADA","level":"PB","levelTitle":"Planta baja","order":11},
+      "id": "CBZ_360_12_ACCESO_ENTRADA",
+      "title": "CBZ_360_12_ACCESO_ENTRADA",
+      "description": "",
+      "level": "PB",
+      "file": "CBZ_360_12_ACCESO_ENTRADA.png",
+      "basename": "CBZ_360_12_ACCESO_ENTRADA",
+      "resolution": null,
+      "initialViewParameters": null,
+      "hotspots": [
+        {
+          id:     "HS_NEW_1791490315130",
+          target: "CBZ_360_13_BAÑO_PB",
+          label:  "1/2 BAÑO",
+          yaw:    -0.6322126819425318,
+          pitch:  0.19997221294103262
+        },
+        {
+          id:     "HS_NEW_1791518844024",
+          target: "CBZ_360_02_AREA_SOCIAL",
+          label:  "SALA-COMEDOR",
+          yaw:    0.046961048648622494,
+          pitch:  -0.005842758503465717
+        },
+        {
+          id:     "HS_NEW_1791518865108",
+          target: "CBZ_360_03_COCINA_COMEDOR",
+          label:  "COCINA",
+          yaw:    0.2822268446938061,
+          pitch:  0.0023404405642803994
+        }
+      ]
+    },
+
+    {
+      menu: {"visible":true,"title":"1/2 BAÑO","level":"PB","levelTitle":"Planta baja","order":12},
+      "id": "CBZ_360_13_BAÑO_PB",
+      "title": "CBZ_360_13_BAÑO_PB",
+      "description": "",
+      "level": "PB",
+      "file": "CBZ_360_13_BAÑO_PB.png",
+      "basename": "CBZ_360_13_BAÑO_PB",
+      "resolution": null,
+      "initialViewParameters": null,
+      "hotspots": [
+        {
+          id:     "HS_NEW_1791490334344",
+          target: "CBZ_360_12_ACCESO_ENTRADA",
+          label:  "VESTIBULO DE ACCESO",
+          yaw:    -2.2133885636573645,
+          pitch:  0.1782581363079654
+        }
+      ]
+    },
+
+    {
+      menu: {"visible":true,"title":"BAÑO COMPLETO","level":"PA","levelTitle":"Planta alta","order":13},
+      "id": "CBZ_360_11_BAÑO_SECUNDARIO",
+      "title": "CBZ_360_11_BAÑO_SECUNDARIO",
+      "description": "",
+      "level": "PB",
+      "file": "CBZ_360_11_BAÑO_SECUNDARIO.png",
+      "basename": "CBZ_360_11_BAÑO_SECUNDARIO",
+      "resolution": null,
+      "initialViewParameters": null,
+      "hotspots": [
+        {
+          id:     "HS_NEW_1791516795668",
+          target: "CBZ_360_04_VESTIBULO",
+          label:  "VESTIBULO",
+          yaw:    3.0070653857918064,
+          pitch:  0.26604052254852384
+        }
+      ]
+    },
+
+    {
+      menu: {"visible":false,"title":"CBZ_10_REGADERA_PRINCIPAL","level":"PB","levelTitle":"Planta baja","order":14},
+      "id": "CBZ_10_REGADERA_PRINCIPAL",
+      "title": "CBZ_10_REGADERA_PRINCIPAL",
+      "description": "",
+      "level": "PB",
+      "file": "CBZ_10_REGADERA_PRINCIPAL.png",
+      "basename": "CBZ_10_REGADERA_PRINCIPAL",
+      "resolution": null,
+      "initialViewParameters": null,
+      "hotspots": [
+        {
+          id:     "HS_NEW_1791516851189",
+          target: "CBZ_360_07_BAÑO_PRINCIPAL",
+          label:  "BAÑO",
+          yaw:    -0.8108988456912485,
+          pitch:  0.2526041973672015
+        }
+      ]
+    }
+  ,
+
+    {
+      menu: {"visible":true,"title":"RECÁMARA SECUNDARIA 02","level":"PA","levelTitle":"Planta alta","order":14},
+      "id": "CBZ_360_09_RECAMARA_SECUNDARIA_02",
+      "title": "CBZ_360_09_RECAMARA_SECUNDARIA_02",
+      "description": "",
+      "level": "PB",
+      "file": "CBZ_360_09_RECAMARA_SECUNDARIA_02.png",
+      "basename": "CBZ_360_09_RECAMARA_SECUNDARIA_02",
+      "resolution": null,
+      "initialViewParameters": null,
+      "hotspots": [
+        {
+          id:     "HS_NEW_1791521565330",
+          target: "CBZ_360_04_VESTIBULO",
+          label:  "VESTIBULO",
+          yaw:    2.6296416961432865,
+          pitch:  0.21752048908686028
+        }
+      ]
+    }
   ] // fin scenes
 
 }; // fin CBZ_CONFIG

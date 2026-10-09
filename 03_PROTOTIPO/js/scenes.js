@@ -9,6 +9,7 @@
 
 var CBZ_SCENES = {};    // mapa id → { data, marzipanoScene, resolvedUrl }
 var CBZ_viewer = null;  // referencia global al visor Marzipano
+var CBZ_sceneLimiter = null;
 
 // ── Parámetros de cámara por defecto (hasta recibir renders finales)
 var CBZ_DEFAULT_VIEW = {
@@ -23,70 +24,108 @@ var CBZ_DEFAULT_VIEW = {
 var CBZ_DEFAULT_PANO_WIDTH = 4096;
 
 // ── Inicializar todas las escenas (SÍNCRONO) ──────────────────────
+function CBZ_registerScene(data) {
+  var resolver = window.CBZ_RESOURCES;
+  if (!resolver) {
+    console.error('[CBZ·Scenes] CBZ_RESOURCES no está definido. Verifica que resourceResolver.js se carga antes de scenes.js.');
+    return null;
+  }
+
+  // Resolver URL sincrónicamente. Crear el source no descarga el panorama;
+  // Marzipano lo solicita al activar esta escena con switchTo().
+  var url = resolver.resolve(data);
+  if (!url) {
+    var emptyEntry = { data: data, marzipanoScene: null, resolvedUrl: null };
+    CBZ_SCENES[data.id] = emptyEntry;
+    return emptyEntry;
+  }
+
+  var source = Marzipano.ImageUrlSource.fromString(url);
+  var panoWidth = (data.resolution !== null && data.resolution !== undefined)
+    ? data.resolution
+    : CBZ_DEFAULT_PANO_WIDTH;
+  var geometry = new Marzipano.EquirectGeometry([{ width: panoWidth }]);
+  var params = data.initialViewParameters || {};
+  var viewParams = {
+    yaw:   (params.yaw   !== null && params.yaw   !== undefined) ? params.yaw   : CBZ_DEFAULT_VIEW.yaw,
+    pitch: (params.pitch !== null && params.pitch !== undefined) ? params.pitch : CBZ_DEFAULT_VIEW.pitch,
+    fov:   (params.fov   !== null && params.fov   !== undefined) ? params.fov   : CBZ_DEFAULT_VIEW.fov
+  };
+  var view = new Marzipano.RectilinearView(viewParams, CBZ_sceneLimiter);
+  var entry = {
+    data: data,
+    marzipanoScene: CBZ_viewer.createScene({
+      source: source,
+      geometry: geometry,
+      view: view,
+      pinFirstLevel: true
+    }),
+    resolvedUrl: url
+  };
+
+  CBZ_SCENES[data.id] = entry;
+  return entry;
+}
+
 function CBZ_initScenes(viewer) {
   CBZ_viewer = viewer;
-
-  var limiter = Marzipano.RectilinearView.limit.traditional(
+  CBZ_sceneLimiter = Marzipano.RectilinearView.limit.traditional(
     1024,
     100 * Math.PI / 180
   );
 
-  CBZ_CONFIG.scenes.forEach(function (data) {
+  CBZ_CONFIG.scenes.forEach(CBZ_registerScene);
+}
 
-    // Resolver URL sincrónicamente — nunca bloquea
-    var resolver = window.CBZ_RESOURCES;
-    if (!resolver) {
-      console.error('[CBZ·Scenes] CBZ_RESOURCES no está definido. Verifica que resourceResolver.js se carga antes de scenes.js.');
-      return;
-    }
-    var url = resolver.resolve(data);
-
-    if (!url) {
-      // Sin URL: registrar escena vacía para que la arquitectura no se rompa
-      CBZ_SCENES[data.id] = { data: data, marzipanoScene: null, resolvedUrl: null };
-      return;
-    }
-
-    var source   = Marzipano.ImageUrlSource.fromString(url);
-    var panoWidth = (data.resolution !== null && data.resolution !== undefined)
-      ? data.resolution
-      : CBZ_DEFAULT_PANO_WIDTH;
-    var geometry = new Marzipano.EquirectGeometry([{ width: panoWidth }]);
-
-    var params = data.initialViewParameters || {};
-    var viewParams = {
-      yaw:   (params.yaw   !== null && params.yaw   !== undefined) ? params.yaw   : CBZ_DEFAULT_VIEW.yaw,
-      pitch: (params.pitch !== null && params.pitch !== undefined) ? params.pitch : CBZ_DEFAULT_VIEW.pitch,
-      fov:   (params.fov   !== null && params.fov   !== undefined) ? params.fov   : CBZ_DEFAULT_VIEW.fov
-    };
-
-    var view = new Marzipano.RectilinearView(viewParams, limiter);
-
-    var marzipanoScene = viewer.createScene({
-      source:        source,
-      geometry:      geometry,
-      view:          view,
-      pinFirstLevel: true
-    });
-
-    CBZ_SCENES[data.id] = {
-      data:           data,
-      marzipanoScene: marzipanoScene,
-      resolvedUrl:    url
-    };
+function CBZ_sceneDataForTarget(targetId) {
+  var target = String(targetId || '');
+  var targetBase = target.replace(/\.(png|jpe?g|webp)$/i, '');
+  var scenes = CBZ_CONFIG.scenes || [];
+  var scene = scenes.find(function (item) {
+    var fileBase = item.file && item.file.replace(/\.(png|jpe?g|webp)$/i, '');
+    return item.id === target || item.file === target ||
+      item.id === targetBase || fileBase === targetBase;
   });
+  if (scene) return scene;
+
+  // El editor guarda el nombre del archivo cuando todavía no existe una
+  // entrada de escena en config.js. Crear esa escena al primer clic.
+  var file = target;
+  var id = target;
+  if (/\.(png|jpe?g|webp)$/i.test(target)) {
+    id = target.replace(/\.(png|jpe?g|webp)$/i, '');
+  } else {
+    file = target + '.png';
+  }
+
+  return {
+    id: id,
+    title: id,
+    level: 'PB',
+    file: file,
+    resolution: null,
+    initialViewParameters: null,
+    hotspots: []
+  };
 }
 
 // ── Cambiar de escena ─────────────────────────────────────────────
 function CBZ_switchScene(targetId) {
-  var entry = CBZ_SCENES[targetId];
+  var sceneId = String(targetId || '');
+  var entry = CBZ_SCENES[sceneId];
 
   if (!entry) {
-    console.warn('[CBZ·Scenes] Escena no encontrada:', targetId);
+    var data = CBZ_sceneDataForTarget(sceneId);
+    sceneId = data.id;
+    entry = CBZ_SCENES[sceneId] || CBZ_registerScene(data);
+  }
+
+  if (!entry) {
+    console.warn('[CBZ·Scenes] Escena no encontrada:', sceneId);
     return;
   }
   if (!entry.marzipanoScene) {
-    console.error('[CBZ·Scenes] La escena "' + targetId + '" no tiene panorama. Revisa config.js.');
+    console.error('[CBZ·Scenes] La escena "' + sceneId + '" no tiene panorama. Revisa config.js.');
     return;
   }
 
@@ -104,7 +143,7 @@ function CBZ_switchScene(targetId) {
   entry.marzipanoScene.switchTo();
 
   var event = new CustomEvent('cbz:sceneChanged', {
-    detail: { sceneId: targetId, sceneData: entry.data }
+    detail: { sceneId: sceneId, sceneData: entry.data }
   });
   document.dispatchEvent(event);
 }

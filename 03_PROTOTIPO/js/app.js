@@ -23,9 +23,26 @@
   var hudLevel = document.getElementById('cbz-hud-level');
 
   document.addEventListener('cbz:sceneChanged', function (e) {
-    if (hudTitle) hudTitle.textContent = e.detail.sceneData.title.toUpperCase();
+    var sceneData = e.detail.sceneData || {};
+    var configuredScene = (CBZ_CONFIG.scenes || []).find(function (scene) {
+      return scene.id === sceneData.id;
+    });
+    var menuTitle = (sceneData.menu && sceneData.menu.title) ||
+      (configuredScene && configuredScene.menu && configuredScene.menu.title);
+    var fallbackTitle = sceneData.title || sceneData.id || '';
+    if (!menuTitle) {
+      fallbackTitle = String(fallbackTitle)
+        .replace(/\.(png|jpe?g|webp)$/i, '')
+        .replace(/^CBZ_360(?:_\d+)?_/i, '')
+        .replace(/^CBZ_/i, '')
+        .replace(/^\d+[_\s]+/, '')
+        .replace(/[_-]+/g, ' ')
+        .trim();
+    }
+    var visibleTitle = menuTitle || fallbackTitle;
+    if (hudTitle) hudTitle.textContent = String(visibleTitle).toUpperCase();
     if (hudLevel) {
-      var lvl        = e.detail.sceneData.level;
+      var lvl        = sceneData.level;
       var displayLvl = (lvl === 'PB') ? 'PB' : 'PA';
       hudLevel.textContent = 'NIVEL: ' + displayLvl;
     }

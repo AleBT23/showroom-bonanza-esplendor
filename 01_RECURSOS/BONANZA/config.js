@@ -73,6 +73,7 @@ var CBZ_CONFIG = {
       title:       'Acceso',
       description: 'Entrada principal de Casa BONANZA.',
       level:       'PB',
+      menu: {"visible":true,"title":"COCHERA","level":"PB","levelTitle":"Planta baja","order":2},
       // file: nombre exacto del panorama ('CBZ_360_01_ACCESO.png' = aún no disponible)
       file:        'CBZ_360_01_ACCESO.png',
       // basename: nombre base sin extensión para resolución automática
@@ -87,11 +88,11 @@ var CBZ_CONFIG = {
       planoIndicador: { x: null, y: null },
       hotspots: [
         {
-          id:     'HS_01_a_02',
-          target: 'CBZ_360_02_AREA_SOCIAL',
-          label:  'ÁREA SOCIAL',
-          yaw:    0.038219,
-          pitch:  0.015733
+          id:     "HS_01_a_02",
+          target: "CBZ_360_02_AREA_SOCIAL",
+          label:  "ÁREA SOCIAL",
+          yaw:    0.03025508679754907,
+          pitch:  -0.03677972117293038
         }
       ]
     },
@@ -101,6 +102,7 @@ var CBZ_CONFIG = {
       title:       'Área Social',
       description: 'Sala principal y área de estar de Casa BONANZA.',
       level:       'PB',
+      menu: {"visible":true,"title":"COMEDOR","level":"PB","levelTitle":"Planta baja","order":1},
       // Render real disponible. Nombre exacto del archivo en 01_RECURSOS/360/
       file:        'CBZ_360_02_AREA_SOCIAL.png',
       basename:    'CBZ_360_02_AREA_SOCIAL',
@@ -113,39 +115,46 @@ var CBZ_CONFIG = {
       planoIndicador: { x: null, y: null },
       hotspots: [
         {
-          id:     'HS_02_a_01',
-          target: 'CBZ_360_01_ACCESO',
-          label:  'Acceso',
-          yaw:    -2.720222,
-          pitch:  0.017269
+          id:     "HS_02_a_01",
+          target: "CBZ_360_01_ACCESO",
+          label:  "Acceso",
+          yaw:    -2.6995045355884795,
+          pitch:  0.034219736907081355
         },
         {
-          id:     'HS_02_a_03',
-          target: 'CBZ_360_03_COCINA_COMEDOR',
-          label:  'COCINA',
-          yaw:    0.589526,
-          pitch:  0.025209
+          id:     "HS_02_a_03",
+          target: "CBZ_360_03_COCINA_COMEDOR",
+          label:  "COCINA",
+          yaw:    0.5555313723233937,
+          pitch:  -0.0030476752156047837
         },
         {
-          id:     'HS_02_a_04',
-          target: 'CBZ_360_09_VESTIBULO',
-          label:  'Subir a PA',
-          yaw:    -0.423556,
-          pitch:  -0.210628
+          id:     "HS_02_a_04",
+          target: "CBZ_360_09_VESTIBULO",
+          label:  "Subir a PA",
+          yaw:    -0.5208949615204155,
+          pitch:  -0.25562928598283285
         },
         {
-          id:     'HS_NEW_1790692253837',
-          target: 'CBZ_360_05_VESTIDOR',
-          label:  'VESTIDOR',
-          yaw:    0.171843,
-          pitch:  0.028446
+          id:     "HS_NEW_1790692253837",
+          target: "CBZ_360_05_VESTIDOR",
+          label:  "VESTIDOR",
+          yaw:    0.08959795416861205,
+          pitch:  -0.011436938761928417
         },
         {
-          id:     'HS_NEW_1790862648317',
-          target: 'CBZ_360_04_SALA',
-          label:  'SALA',
-          yaw:    -1.147153,
-          pitch:  0.150273
+          id:     "HS_NEW_1790862648317",
+          target: "CBZ_360_04_SALA",
+          label:  "SALA",
+          yaw:    -1.2492920861481611,
+          pitch:  0.03560268789738075
+        },
+        {
+          id:     "HS_NEW_1791298632245",
+          target: "CBZ_360_16_BAÑO_PB.png",
+          label:  "BAÑO",
+          yaw:    -0.10812545440634302,
+          pitch:  -0.018498149583505707
         }
       ]
     },
@@ -155,6 +164,7 @@ var CBZ_CONFIG = {
       title:       'Cocina · Comedor',
       description: 'Cocina y comedor integrados de Casa BONANZA.',
       level:       'PB',
+      menu: {"visible":true,"title":"COCINA","level":"PB","levelTitle":"Planta baja","order":3},
       file:        'CBZ_360_03_COCINA_COMEDOR.png',
       basename:    'CBZ_360_03_COCINA_COMEDOR',
       resolution:  null,
@@ -166,18 +176,25 @@ var CBZ_CONFIG = {
       planoIndicador: { x: null, y: null },
       hotspots: [
         {
-          id:     'HS_03_a_02',
-          target: 'CBZ_360_02_AREA_SOCIAL',
-          label:  'Área Social',
-          yaw:    0.248650,
-          pitch:  0.046500
+          id:     "HS_03_a_02",
+          target: "CBZ_360_02_AREA_SOCIAL",
+          label:  "Área Social",
+          yaw:    0.9653609114133452,
+          pitch:  -0.027909938148480862
         },
         {
-          id:     'HS_NEW_1790862620040',
-          target: 'CBZ_360_08_PATIO',
-          label:  'PATIO INTERNO',
-          yaw:    -2.851820,
-          pitch:  0.091966
+          id:     "HS_NEW_1790862620040",
+          target: "CBZ_19_CUARTO_DE_SERVICIO.png",
+          label:  "PÁTIO DE SERVICIO",
+          yaw:    -2.1136533020532973,
+          pitch:  0.05057944836729256
+        },
+        {
+          id:     "HS_NEW_1791298662602",
+          target: "CBZ_360_16_BAÑO_PB.png",
+          label:  "BAÑO",
+          yaw:    2.081172,
+          pitch:  0.002417
         }
       ]
     },
@@ -189,6 +206,7 @@ var CBZ_CONFIG = {
       title:       'Sala',
       description: 'Sala principal de Casa BONANZA.',
       level:       'PB',
+      menu: {"visible":true,"title":"SALA","level":"PB","levelTitle":"Planta baja","order":4},
       file:        'CBZ_360_04_SALA.png',
       basename:    'CBZ_360_04_SALA',
       resolution:  null,
@@ -200,39 +218,39 @@ var CBZ_CONFIG = {
       planoIndicador: { x: null, y: null },
       hotspots: [
         {
-          id:     'HS_04_a_02',
-          target: 'CBZ_360_02_AREA_SOCIAL',
-          label:  'Bajar a PB',
-          yaw:    1.986570,
+          id:     "HS_04_a_02",
+          target: "CBZ_360_02_AREA_SOCIAL",
+          label:  "Bajar a PB",
+          yaw:    1.98657,
           pitch:  0.351501
         },
         {
-          id:     'HS_04_a_05',
-          target: 'CBZ_360_02_AREA_SOCIAL',
-          label:  'AREA SOCIAL',
-          yaw:    0.749316,
-          pitch:  0.054819
+          id:     "HS_04_a_05",
+          target: "CBZ_360_02_AREA_SOCIAL",
+          label:  "AREA SOCIAL",
+          yaw:    0.7287186968258297,
+          pitch:  0.039690147534365394
         },
         {
-          id:     'HS_04_a_06',
-          target: 'CBZ_360_10_HABITACION_02',
-          label:  'Recámara Secundaria',
+          id:     "HS_04_a_06",
+          target: "CBZ_360_10_HABITACION_02",
+          label:  "Recámara Secundaria",
           yaw:    -2.506422,
           pitch:  0.133335
         },
         {
-          id:     'HS_NEW_1790862680097',
-          target: 'CBZ_360_09_VESTIBULO',
-          label:  'SUBIR A PA',
-          yaw:    -0.636125,
-          pitch:  -0.215939
+          id:     "HS_NEW_1790862680097",
+          target: "CBZ_360_09_VESTIBULO",
+          label:  "SUBIR A PA",
+          yaw:    -0.6864489504732632,
+          pitch:  -0.2439588347145225
         },
         {
-          id:     'HS_NEW_1790862697944',
-          target: 'CBZ_360_03_COCINA_COMEDOR',
-          label:  'COCINA',
-          yaw:    0.173583,
-          pitch:  0.012222
+          id:     "HS_NEW_1790862697944",
+          target: "CBZ_360_03_COCINA_COMEDOR",
+          label:  "COCINA",
+          yaw:    0.08971480579578817,
+          pitch:  -0.002549151296134866
         }
       ]
     },
@@ -242,6 +260,7 @@ var CBZ_CONFIG = {
       title:       'Vestidor',
       description: 'Vestidor del Nivel 2.',
       level:       'PA',
+      menu: {"visible":true,"title":"VESTIDOR","level":"PB","levelTitle":"Planta baja","order":5},
       file:        'CBZ_360_05_VESTIDOR.png',
       basename:    'CBZ_360_05_VESTIDOR',
       resolution:  null,
@@ -253,18 +272,25 @@ var CBZ_CONFIG = {
       planoIndicador: { x: null, y: null },
       hotspots: [
         {
-          id:     'HS_05_a_04',
-          target: 'CBZ_360_07_HABITACION_PRINCIPAL',
-          label:  'HABITACION PRINCIPAL',
-          yaw:    0.330008,
-          pitch:  0.084072
+          id:     "HS_05_a_04",
+          target: "CBZ_360_07_HABITACION_PRINCIPAL",
+          label:  "HABITACION PRINCIPAL",
+          yaw:    1.648573,
+          pitch:  0.051838
         },
         {
-          id:     'HS_NEW_1790862525486',
-          target: 'CBZ_360_06_BAÑO',
-          label:  'BAÑO',
-          yaw:    0.696680,
-          pitch:  0.056662
+          id:     "HS_NEW_1790862525486",
+          target: "CBZ_360_06_BAÑO",
+          label:  "BAÑO",
+          yaw:    2.0244887789313095,
+          pitch:  0.06562608508182066
+        },
+        {
+          id:     "HS_NEW_1791298713054",
+          target: "CBZ_360_02_AREA_SOCIAL",
+          label:  "ÁREA SOCIAL",
+          yaw:    -1.808112,
+          pitch:  0.025745
         }
       ]
     },
@@ -274,6 +300,7 @@ var CBZ_CONFIG = {
       title:       'Baño',
       description: 'Baño del Nivel 2.',
       level:       'PA',
+      menu: {"visible":true,"title":"BAÑO COMPLETO","level":"PB","levelTitle":"Planta baja","order":5},
       file:        'CBZ_360_06_BAÑO.png',
       basename:    'CBZ_360_06_BAÑO',
       resolution:  null,
@@ -301,6 +328,7 @@ var CBZ_CONFIG = {
       title:       'Habitación Principal',
       description: 'Habitación principal del Nivel 2.',
       level:       'PA',
+      menu: {"visible":true,"title":"HABITACION PRINCIPAL","level":"PB","levelTitle":"Planta baja","order":4},
       file:        'CBZ_360_07_HABITACION_PRINCIPAL.png',
       basename:    'CBZ_360_07_HABITACION_PRINCIPAL',
       resolution:  null,
@@ -315,15 +343,15 @@ var CBZ_CONFIG = {
           id:     'HS_07_a_04',
           target: 'CBZ_360_08_PATIO',
           label:  'PATIO INTERNO',
-          yaw:    -0.135492,
-          pitch:  0.066529
+          yaw:    -1.481129,
+          pitch:  0.058045
         },
         {
           id:     'HS_NEW_1790862476503',
           target: 'CBZ_360_05_VESTIDOR',
           label:  'VESTIDOR',
-          yaw:    1.344148,
-          pitch:  0.042990
+          yaw:    0.125837,
+          pitch:  0.048136
         }
       ]
     },
@@ -333,6 +361,7 @@ var CBZ_CONFIG = {
       title:       'Patio',
       description: 'Patio de Casa BONANZA.',
       level:       'PB',
+      menu: {"visible":true,"title":"PATIO INTERNO","level":"PB","levelTitle":"Planta baja","order":5},
       file:        'CBZ_360_08_PATIO.png',
       basename:    'CBZ_360_08_PATIO',
       resolution:  null,
@@ -348,10 +377,10 @@ var CBZ_CONFIG = {
         },
         {
           id:     'HS_NEW_1790862600981',
-          target: 'CBZ_360_03_COCINA_COMEDOR',
-          label:  'COCINA',
-          yaw:    -2.870976,
-          pitch:  0.039011
+          target: 'CBZ_19_CUARTO_DE_SERVICIO.png',
+          label:  'PATIO DE SERVICIO',
+          yaw:    2.344158,
+          pitch:  0.077423
         }
       ]
     },
@@ -361,6 +390,7 @@ var CBZ_CONFIG = {
       title:       'Vestíbulo',
       description: 'Vestíbulo del Nivel 2.',
       level:       'PA',
+      menu: {"visible":true,"title":"SALA DE TV","level":"PA","levelTitle":"Planta alta","order":1},
       file:        'CBZ_360_09_VESTIBULO.png',
       basename:    'CBZ_360_09_VESTIBULO',
       resolution:  null,
@@ -368,39 +398,46 @@ var CBZ_CONFIG = {
       planoIndicador: { x: null, y: null },
       hotspots: [
         {
-          id:     'HS_NEW_1790862072857',
-          target: 'CBZ_360_10_HABITACION_02',
-          label:  'RECAMARA 02',
-          yaw:    -0.151942,
-          pitch:  0.080706
+          id:     "HS_NEW_1790862072857",
+          target: "CBZ_360_10_HABITACION_02",
+          label:  "RECAMARA 02",
+          yaw:    -2.5594060157201124,
+          pitch:  0.04824536748845176
         },
         {
-          id:     'HS_NEW_1790862228633',
-          target: 'CBZ_360_11_HABITACION_03',
-          label:  'RECAMARA 03',
-          yaw:    0.192547,
-          pitch:  0.075932
+          id:     "HS_NEW_1790862228633",
+          target: "CBZ_360_11_HABITACION_03",
+          label:  "RECAMARA 03",
+          yaw:    -2.2244094314149887,
+          pitch:  0.05138771252255658
         },
         {
-          id:     'HS_NEW_1790862253126',
-          target: 'CBZ_360_12_TERRAZA_01',
-          label:  'TERRAZA 01',
-          yaw:    2.475401,
-          pitch:  -0.185197
+          id:     "HS_NEW_1790862253126",
+          target: "CBZ_360_12_TERRAZA_01",
+          label:  "TERRAZA 01",
+          yaw:    0.0008701645052600071,
+          pitch:  -0.22527989294252215
         },
         {
-          id:     'HS_NEW_1790862275683',
-          target: 'CBZ_360_13_TERRAZA_SUPERIOR',
-          label:  'TERRAZA-AZOTEA',
-          yaw:    3.126006,
-          pitch:  -0.248309
+          id:     "HS_NEW_1790862275683",
+          target: "CBZ_360_13_TERRAZA_SUPERIOR",
+          label:  "TERRAZA-AZOTEA",
+          yaw:    0.6876725032000461,
+          pitch:  -0.2949605220618885
         },
         {
-          id:     'HS_NEW_1790862320736',
-          target: 'CBZ_360_02_AREA_SOCIAL',
-          label:  'AREA SOCIAL',
-          yaw:    3.070689,
-          pitch:  0.485401
+          id:     "HS_NEW_1791298851144",
+          target: "CBZ_360_17_BAÑO_TERRAZA.png",
+          label:  "BAÑO",
+          yaw:    -0.14325229393072547,
+          pitch:  -0.2524814459374376
+        },
+        {
+          id:     "HS_NEW_1791470465264",
+          target: "CBZ_360_04_SALA",
+          label:  "SALA",
+          yaw:    0.6660868891498453,
+          pitch:  0.4295855124357928
         }
       ]
     },
@@ -410,6 +447,7 @@ var CBZ_CONFIG = {
       title:       'Habitación 02',
       description: 'Habitación secundaria del Nivel 2.',
       level:       'PA',
+      menu: {"visible":true,"title":"RECÁMARA SECUNDARIA 02","level":"PA","levelTitle":"Planta alta","order":3},
       file:        'CBZ_360_10_HABITACION_02.png',
       basename:    'CBZ_360_10_HABITACION_02',
       resolution:  null,
@@ -417,11 +455,18 @@ var CBZ_CONFIG = {
       planoIndicador: { x: null, y: null },
       hotspots: [
         {
-          id:     'HS_NEW_1790862346520',
-          target: 'CBZ_360_09_VESTIBULO',
-          label:  'VESTIBULO',
-          yaw:    -2.170388,
-          pitch:  -0.014910
+          id:     "HS_NEW_1790862346520",
+          target: "CBZ_360_09_VESTIBULO",
+          label:  "VESTIBULO",
+          yaw:    2.9527178137784684,
+          pitch:  -0.02419717749192074
+        },
+        {
+          id:     "HS_NEW_1791298890807",
+          target: "CBZ_360_15_BAÑO_02",
+          label:  "BAÑO",
+          yaw:    -3.0865917445156725,
+          pitch:  -0.04994801537323568
         }
       ]
     },
@@ -431,6 +476,7 @@ var CBZ_CONFIG = {
       title:       'Habitación 03',
       description: 'Habitación secundaria del Nivel 2.',
       level:       'PA',
+      menu: {"visible":true,"title":"RECAMARA SECUNDARIA 03","level":"PA","levelTitle":"Planta alta","order":6},
       file:        'CBZ_360_11_HABITACION_03.png',
       basename:    'CBZ_360_11_HABITACION_03',
       resolution:  null,
@@ -438,11 +484,18 @@ var CBZ_CONFIG = {
       planoIndicador: { x: null, y: null },
       hotspots: [
         {
-          id:     'HS_NEW_1790862374906',
-          target: 'CBZ_360_09_VESTIBULO',
-          label:  'VESTIBULO',
-          yaw:    1.509541,
-          pitch:  -0.043420
+          id:     "HS_NEW_1790862374906",
+          target: "CBZ_360_09_VESTIBULO",
+          label:  "VESTIBULO",
+          yaw:    2.7480771821624943,
+          pitch:  0.019392244539019998
+        },
+        {
+          id:     "HS_NEW_1791298917984",
+          target: "CBZ_360_14_BAÑO_03.png",
+          label:  "BAÑO",
+          yaw:    1.4387954014744153,
+          pitch:  -0.0026319263826621864
         }
       ]
     },
@@ -452,6 +505,7 @@ var CBZ_CONFIG = {
       title:       'Terraza 01',
       description: 'Terraza de Casa BONANZA.',
       level:       'N3',
+      menu: {"visible":true,"title":"TERRAZA 01","level":"N3","levelTitle":"Nivel 3","order":1},
       file:        'CBZ_360_12_TERRAZA_01.png',
       basename:    'CBZ_360_12_TERRAZA_01',
       resolution:  null,
@@ -462,8 +516,8 @@ var CBZ_CONFIG = {
           id:     'HS_NEW_1790862401284',
           target: 'CBZ_360_09_VESTIBULO',
           label:  'VESTIBULO',
-          yaw:    -2.847086,
-          pitch:  0.183087
+          yaw:    0.247784,
+          pitch:  0.076153
         }
       ]
     },
@@ -473,6 +527,7 @@ var CBZ_CONFIG = {
       title:       'Terraza Superior',
       description: 'Terraza superior de Casa BONANZA.',
       level:       'N3',
+      menu: {"visible":true,"title":"TERRAZA-AZOTEA","level":"N3","levelTitle":"Nivel 3","order":2},
       file:        'CBZ_360_13_TERRAZA_SUPERIOR.png',
       basename:    'CBZ_360_13_TERRAZA_SUPERIOR',
       resolution:  null,
@@ -480,15 +535,160 @@ var CBZ_CONFIG = {
       planoIndicador: { x: null, y: null },
       hotspots: [
         {
-          id:     'HS_NEW_1790862426690',
-          target: 'CBZ_360_09_VESTIBULO',
-          label:  'VESTIBULO',
-          yaw:    2.014468,
-          pitch:  0.055526
+          id:     "HS_NEW_1790862426690",
+          target: "CBZ_360_09_VESTIBULO",
+          label:  "VESTIBULO",
+          yaw:    2.544527202634187,
+          pitch:  -0.008426711498948691
+        },
+        {
+          id:     "HS_NEW_1791298936745",
+          target: "CBZ_360_18_CUARTO_DE_LAVADO.png",
+          label:  "CUARTO DE LAVADO",
+          yaw:    -0.5113841968116031,
+          pitch:  -0.03796625286288702
         }
       ]
     }
 
+  ,
+
+    {
+      menu: {"visible":true,"title":"1/2 BAÑO","level":"PB","levelTitle":"Planta baja","order":10},
+      "id": "CBZ_360_16_BAÑO_PB",
+      "title": "CBZ_360_16_BAÑO_PB",
+      "description": "",
+      "level": "PB",
+      "file": "CBZ_360_16_BAÑO_PB.png",
+      "basename": "CBZ_360_16_BAÑO_PB",
+      "resolution": null,
+      "initialViewParameters": null,
+      "hotspots": [
+        {
+          id:     "HS_NEW_1791521800229",
+          target: "CBZ_360_03_COCINA_COMEDOR",
+          label:  "COCINA",
+          yaw:    1.206437915313595,
+          pitch:  0.1481346022778709
+        }
+      ]
+    }
+  ,
+
+    {
+      menu: {"visible":true,"title":"PATIO DE SERVICIO","level":"PB","levelTitle":"Planta baja","order":15},
+      "id": "CBZ_19_CUARTO_DE_SERVICIO",
+      "title": "CBZ_19_CUARTO_DE_SERVICIO",
+      "description": "",
+      "level": "PB",
+      "file": "CBZ_19_CUARTO_DE_SERVICIO.png",
+      "basename": "CBZ_19_CUARTO_DE_SERVICIO",
+      "resolution": null,
+      "initialViewParameters": null,
+      "hotspots": [
+        {
+          id:     "HS_NEW_1791521835803",
+          target: "CBZ_360_03_COCINA_COMEDOR",
+          label:  "COCINA",
+          yaw:    0.33835748430811385,
+          pitch:  0.10013054190138604
+        },
+        {
+          id:     "HS_NEW_1791522615497",
+          target: "CBZ_360_08_PATIO",
+          label:  "PATIO INTERNO",
+          yaw:    -2.917147021542732,
+          pitch:  0.018839034881995786
+        }
+      ]
+    }
+  ,
+
+    {
+      menu: {"visible":true,"title":"CBZ_360_15_BAÑO_02","level":"PB","levelTitle":"Planta baja","order":16},
+      "id": "CBZ_360_15_BAÑO_02",
+      "title": "CBZ_360_15_BAÑO_02",
+      "description": "",
+      "level": "PB",
+      "file": "CBZ_360_15_BAÑO_02.png",
+      "basename": "CBZ_360_15_BAÑO_02",
+      "resolution": null,
+      "initialViewParameters": null,
+      "hotspots": [
+        {
+          id:     "HS_NEW_1791523476983",
+          target: "CBZ_360_10_HABITACION_02",
+          label:  "HABTACIÓN SECUNDARIA",
+          yaw:    3.125467867148517,
+          pitch:  0.6261244731678595
+        }
+      ]
+    }
+  ,
+
+    {
+      menu: {"visible":true,"title":"CBZ_360_14_BAÑO_03","level":"PB","levelTitle":"Planta baja","order":17},
+      "id": "CBZ_360_14_BAÑO_03",
+      "title": "CBZ_360_14_BAÑO_03",
+      "description": "",
+      "level": "PB",
+      "file": "CBZ_360_14_BAÑO_03.png",
+      "basename": "CBZ_360_14_BAÑO_03",
+      "resolution": null,
+      "initialViewParameters": null,
+      "hotspots": [
+        {
+          id:     "HS_NEW_1791523532278",
+          target: "CBZ_360_11_HABITACION_03",
+          label:  "HABITACIÓN SECUNDARIA",
+          yaw:    2.550543717608744,
+          pitch:  0.4767615588999803
+        }
+      ]
+    }
+  ,
+
+    {
+      menu: {"visible":true,"title":"CBZ_360_18_CUARTO_DE_LAVADO","level":"PB","levelTitle":"Planta baja","order":18},
+      "id": "CBZ_360_18_CUARTO_DE_LAVADO",
+      "title": "CBZ_360_18_CUARTO_DE_LAVADO",
+      "description": "",
+      "level": "PB",
+      "file": "CBZ_360_18_CUARTO_DE_LAVADO.png",
+      "basename": "CBZ_360_18_CUARTO_DE_LAVADO",
+      "resolution": null,
+      "initialViewParameters": null,
+      "hotspots": [
+        {
+          id:     "HS_NEW_1791523611431",
+          target: "CBZ_360_13_TERRAZA_SUPERIOR",
+          label:  "TERRAZA AZOTEA",
+          yaw:    -2.2516592923031293,
+          pitch:  0.05929360486657487
+        }
+      ]
+    }
+  ,
+
+    {
+      "id": "CBZ_360_17_BAÑO_TERRAZA",
+      "title": "CBZ_360_17_BAÑO_TERRAZA",
+      "description": "",
+      "level": "PB",
+      "file": "CBZ_360_17_BAÑO_TERRAZA.png",
+      "basename": "CBZ_360_17_BAÑO_TERRAZA",
+      "resolution": null,
+      "initialViewParameters": null,
+      "hotspots": [
+        {
+          id:     "HS_NEW_1791524283838",
+          target: "CBZ_360_09_VESTIBULO",
+          label:  "SALA DE TV",
+          yaw:    -1.729973701899537,
+          pitch:  0.707936326255652
+        }
+      ]
+    }
   ] // fin scenes
 
 }; // fin CBZ_CONFIG

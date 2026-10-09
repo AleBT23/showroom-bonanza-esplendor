@@ -59,10 +59,9 @@
       url = buildPanoUrl(CBZ_CONFIG.placeholder);
     }
 
-    // Diagnóstico en consola (no bloquea nada)
-    if (url) {
-      _logAsync(sceneData, url);
-    } else {
+    // No comprobar la existencia con Image(): eso descarga el panorama completo
+    // al registrar cada escena. Marzipano solicita la imagen al activar la escena.
+    if (!url) {
       console.error(
         '[CBZ·Resolver] ' + sceneData.id + ' — Sin file ni placeholder. ' +
         'El visor quedará negro para esta escena.'
@@ -71,41 +70,6 @@
     }
 
     return url;
-  }
-
-  // ══════════════════════════════════════════════════════════════════
-  // DIAGNÓSTICO ASÍNCRONO (fire-and-forget)
-  // Verifica que la URL exista y registra el resultado.
-  // NO bloquea la inicialización de Marzipano.
-  //
-  // IMPORTANTE: si esto falla (img.onerror), es la causa exacta del
-  // síntoma "ya no dice Cargando pero la pantalla queda negra": Marzipano
-  // activa la escena (el HUD se actualiza igual) aunque la textura nunca
-  // haya llegado a WebGL. Por eso, además de loguear en consola, se pinta
-  // un aviso visible en pantalla — un 404 aquí NUNCA debe quedar en
-  // silencio.
-  // ══════════════════════════════════════════════════════════════════
-  function _logAsync(sceneData, url) {
-    var img = new Image();
-    img.onload = function () {
-      console.log(
-        '[CBZ·Resolver] ' + sceneData.id + ' — ' + sceneData.title + '\n' +
-        '  Archivo: ' + url.split('/').pop() + '\n' +
-        '  Ruta: ' + url + '\n' +
-        '  Estado: ✓ OK'
-      );
-    };
-    img.onerror = function () {
-      console.error(
-        '[CBZ·Resolver] ' + sceneData.id + ' — ' + sceneData.title + '\n' +
-        '  ✗ ERROR: No se pudo cargar la imagen.\n' +
-        '  Ruta: ' + url + '\n' +
-        '  Verifica que el archivo existe EXACTAMENTE con ese nombre ' +
-        '(mayúsculas/minúsculas incluidas) en 01_RECURSOS/360/.'
-      );
-      _showOnScreenError(sceneData.id, url);
-    };
-    img.src = url;
   }
 
   // ══════════════════════════════════════════════════════════════════
