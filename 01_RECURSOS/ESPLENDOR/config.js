@@ -92,7 +92,7 @@ var CBZ_CONFIG = {
           target: "CBZ_360_12_ACCESO_ENTRADA",
           label:  "ACCESO",
           yaw:    -0.13548167980829184,
-          pitch:  -0.02513090018300801
+          pitch:  -0.017574614689387147
         }
       ]
     },
@@ -440,6 +440,13 @@ var CBZ_CONFIG = {
           label:  "COCINA",
           yaw:    0.2822268446938061,
           pitch:  0.0023404405642803994
+        },
+        {
+          id:     "HS_NEW_1791569033564",
+          target: "CBZ_360_01_ACCESO",
+          label:  "COCHERA",
+          yaw:    -3.0868887951147386,
+          pitch:  -0.032325809051254595
         }
       ]
     },
