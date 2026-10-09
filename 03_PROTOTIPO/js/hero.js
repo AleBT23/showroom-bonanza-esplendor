@@ -24,13 +24,12 @@
   var btn     = document.getElementById('cbz-hero-btn');
   var video   = document.getElementById('cbz-hero-video');
 
-  // Esperar a que exista contenido reproducible antes de llamar a play().
+  // play() inicia la carga cuando la presentación está visible. No combinar
+  // asignación de src, load() y autoplay: reiniciarían la selección del recurso.
   function playVideoWhenReady() {
-    if (!video) return;
-    if (video.readyState < 3) {
-      video.addEventListener('canplay', playVideoWhenReady, { once: true });
-      return;
-    }
+    if (!video || window.CBZ_SHOW_PROPERTY_SELECTOR) return;
+    if (!video.getAttribute('src') && video.dataset.src) video.src = video.dataset.src;
+    if (!video.getAttribute('src')) return;
     var request = video.play();
     if (request && typeof request.catch === 'function') {
       request.catch(function(e) {
@@ -45,6 +44,10 @@
     });
     playVideoWhenReady();
   }
+
+  window.CBZ_pauseHeroVideo = function () {
+    if (video) video.pause();
+  };
 
   function runHeroIntro() {
     // Secuencia de entrada cinematográfica

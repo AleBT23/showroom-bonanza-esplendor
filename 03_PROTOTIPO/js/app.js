@@ -6,7 +6,7 @@
  *   1. Crear visor Marzipano
  *   2. CBZ_initScenes()   — registra todas las escenas
  *   3. CBZ_initHotspots() — registra hotspots en cada escena
- *   4. CBZ_switchScene()  — activa la escena inicial → HUD actualiza
+ *   4. Activar acceso al iniciar recorrido, o inmediatamente en el editor.
  */
 
 (function () {
@@ -53,7 +53,11 @@
   CBZ_initScenes(viewer);
   CBZ_initHotspots();
 
-  // Activar escena inicial — este evento actualiza el HUD inmediatamente
-  CBZ_switchScene('CBZ_360_01_ACCESO');
+  // En presentación/selector se registran escenas sin descargar panoramas.
+  // Los botones de iniciar recorrido activan el acceso cuando se necesita.
+  if (new URLSearchParams(window.location.search).get('edit') === '1' ||
+      !document.getElementById('cbz-hero')) {
+    CBZ_switchScene('CBZ_360_01_ACCESO');
+  }
 
 })();

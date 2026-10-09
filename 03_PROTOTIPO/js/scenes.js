@@ -31,8 +31,8 @@ function CBZ_registerScene(data) {
     return null;
   }
 
-  // Resolver URL sincrónicamente. Crear el source no descarga el panorama;
-  // Marzipano lo solicita al activar esta escena con switchTo().
+  // Registrar sin fijar texturas: pinFirstLevel en createScene descargaría
+  // el panorama incluso con la escena inactiva.
   var url = resolver.resolve(data);
   if (!url) {
     var emptyEntry = { data: data, marzipanoScene: null, resolvedUrl: null };
@@ -58,7 +58,7 @@ function CBZ_registerScene(data) {
       source: source,
       geometry: geometry,
       view: view,
-      pinFirstLevel: true
+      pinFirstLevel: false
     }),
     resolvedUrl: url
   };
@@ -127,6 +127,15 @@ function CBZ_switchScene(targetId) {
   if (!entry.marzipanoScene) {
     console.error('[CBZ·Scenes] La escena "' + sceneId + '" no tiene panorama. Revisa config.js.');
     return;
+  }
+
+  if (CBZ_viewer.scene() === entry.marzipanoScene) return;
+
+  // Solo las escenas visitadas conservan su textura. La fijación se hace
+  // una vez y evita nuevas descargas cuando se vuelve a este panorama.
+  if (!entry.panoramaPinned) {
+    entry.marzipanoScene.layer().pinFirstLevel();
+    entry.panoramaPinned = true;
   }
 
   var transition = document.getElementById('cbz-scene-transition');

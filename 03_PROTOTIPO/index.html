@@ -43,7 +43,7 @@
 
   <!-- HERO de bienvenida -->
   <div id="cbz-hero">
-    <video id="cbz-hero-video" autoplay loop muted playsinline preload="metadata"></video>
+    <video id="cbz-hero-video" loop muted playsinline preload="none"></video>
     <div id="cbz-hero-overlay"></div>
     <div id="cbz-hero-title">CASA ESPLENDOR</div>
     <div id="cbz-hero-content">
@@ -180,8 +180,8 @@
         console.warn("[CBZ·Hero] No hay video MP4 configurado para " + window.CBZ_PROPERTY);
         return;
       }
-      video.src = "../01_RECURSOS/" + window.CBZ_PROPERTY + "/VIDEO/" + encodeURIComponent(file);
-      video.load();
+      // El controlador del Hero asigna src únicamente cuando lo reproduce.
+      video.dataset.src = "../01_RECURSOS/" + window.CBZ_PROPERTY + "/VIDEO/" + encodeURIComponent(file);
       video.addEventListener("error", function () {
         console.error("[CBZ·Hero] No se pudo cargar el video MP4:", video.src);
       }, { once: true });

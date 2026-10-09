@@ -47,6 +47,7 @@
   }
 
   function openFromHero(name) {
+    if (typeof window.CBZ_pauseHeroVideo === 'function') window.CBZ_pauseHeroVideo();
     if (hero) {
       hero.style.display = 'none';
       hero.setAttribute('aria-hidden', 'true');
