@@ -44,7 +44,7 @@ var CBZ_CONFIG = {
   // Se usa cuando una escena no tiene file ni basename, o cuando
   // el archivo declarado no existe en disco.
   // null → desactivar placeholder (mostrará error claro en consola).
-  placeholder: 'CBZ_360_02_AREA_SOCIAL.png',
+  placeholder: 'CBZ_360_02_AREA_SOCIAL.webp',
 
   // ── VISOR ─────────────────────────────────────────────────────────
   viewer: {
@@ -75,7 +75,7 @@ var CBZ_CONFIG = {
       level:       'PB',
       menu: {"visible":true,"title":"COCHERA","level":"PB","levelTitle":"Planta baja","order":2},
       // file: nombre exacto del panorama ('CBZ_360_01_ACCESO.png' = aún no disponible)
-      file:        'CBZ_360_01_ACCESO.png',
+      file:        'CBZ_360_01_ACCESO.webp',
       // basename: nombre base sin extensión para resolución automática
       basename:    'CBZ_360_01_ACCESO',
       // resolution: hint de ancho real en px para Marzipano (null = default 4096)
@@ -104,7 +104,7 @@ var CBZ_CONFIG = {
       level:       'PB',
       menu: {"visible":true,"title":"COMEDOR","level":"PB","levelTitle":"Planta baja","order":1},
       // Render real disponible. Nombre exacto del archivo en 01_RECURSOS/360/
-      file:        'CBZ_360_02_AREA_SOCIAL.png',
+      file:        'CBZ_360_02_AREA_SOCIAL.webp',
       basename:    'CBZ_360_02_AREA_SOCIAL',
       resolution:  4096,   // px de ancho real del panorama
       initialViewParameters: {
@@ -165,7 +165,7 @@ var CBZ_CONFIG = {
       description: 'Cocina y comedor integrados de Casa BONANZA.',
       level:       'PB',
       menu: {"visible":true,"title":"COCINA","level":"PB","levelTitle":"Planta baja","order":3},
-      file:        'CBZ_360_03_COCINA_COMEDOR.png',
+      file:        'CBZ_360_03_COCINA_COMEDOR.webp',
       basename:    'CBZ_360_03_COCINA_COMEDOR',
       resolution:  null,
       initialViewParameters: {
