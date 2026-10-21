@@ -91,8 +91,8 @@ var CBZ_CONFIG = {
           id:     "HS_01_a_02",
           target: "CBZ_360_02_AREA_SOCIAL",
           label:  "ACCESO",
-          yaw:    0.036605952544187303,
-          pitch:  -0.030425293982695223
+          yaw:    0.02898455210913653,
+          pitch:  -0.041857530224749695
         }
       ]
     },
@@ -125,8 +125,8 @@ var CBZ_CONFIG = {
           id:     "HS_02_a_03",
           target: "CBZ_360_03_COCINA_COMEDOR",
           label:  "COCINA",
-          yaw:    0.5704757493251638,
-          pitch:  0.004449278627852493
+          yaw:    0.568525577869103,
+          pitch:  -0.00021638282945701803
         },
         {
           id:     "HS_02_a_04",
