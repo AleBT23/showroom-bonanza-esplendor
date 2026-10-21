@@ -47,18 +47,24 @@ var CBZ_ASSETS = {
     }
   ],
   "panoramas": [
-    "CBZ_360_01_ACCESO.png",
-    "CBZ_360_02_AREA_SOCIAL.png",
-    "CBZ_360_03_COCINA_COMEDOR.png",
-    "CBZ_360_04_SALA.png",
-    "CBZ_360_05_VESTIDOR.png",
-    "CBZ_360_06_BAÑO.png",
-    "CBZ_360_07_HABITACION_PRINCIPAL.png",
-    "CBZ_360_08_PATIO.png",
-    "CBZ_360_09_VESTIBULO.png",
-    "CBZ_360_10_HABITACION_02.png",
-    "CBZ_360_11_HABITACION_03.png",
-    "CBZ_360_12_TERRAZA_01.png",
-    "CBZ_360_13_TERRAZA_SUPERIOR.png"
+    "CBZ_19_CUARTO_DE_SERVICIO.webp",
+    "CBZ_360_01_ACCESO.webp",
+    "CBZ_360_02_AREA_SOCIAL.webp",
+    "CBZ_360_03_COCINA_COMEDOR.webp",
+    "CBZ_360_04_SALA.webp",
+    "CBZ_360_05_VESTIDOR.webp",
+    "CBZ_360_06_BAÑO.webp",
+    "CBZ_360_07_HABITACION_PRINCIPAL.webp",
+    "CBZ_360_08_PATIO.webp",
+    "CBZ_360_09_VESTIBULO.webp",
+    "CBZ_360_10_HABITACION_02.webp",
+    "CBZ_360_11_HABITACION_03.webp",
+    "CBZ_360_12_TERRAZA_01.webp",
+    "CBZ_360_13_TERRAZA_SUPERIOR.webp",
+    "CBZ_360_14_BAÑO_03.webp",
+    "CBZ_360_15_BAÑO_02.webp",
+    "CBZ_360_16_BAÑO_PB.webp",
+    "CBZ_360_17_BAÑO_TERRAZA.webp",
+    "CBZ_360_18_CUARTO_DE_LAVADO.webp"
   ]
 };

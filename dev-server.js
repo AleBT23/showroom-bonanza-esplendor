@@ -26,6 +26,7 @@ const path = require('path');
 const url  = require('url');
 const vm   = require('vm');
 const resourceIndex = require('./generate-assets');
+const panoramaFiles = require('./validate-panoramas');
 
 // ── Configuración ────────────────────────────────────────────────
 const PORT        = 8080;
@@ -128,9 +129,11 @@ function locateConfigScenes(text) {
       throw new Error('Array de hotspots inválido en la escena ' + id);
     }
     const menu = property(i, 'menu');
+    const file = property(i, 'file');
     scenes.set(id, {
       start: tokens[hotspots].end, end: tokens[closes.get(hotspots)].start,
       objectStart: tokens[i].end,
+      file: file < 0 ? null : { start: tokens[file].start, end: tokens[file].end },
       menu: menu < 0 ? null : { start: tokens[menu].start,
         end: tokens[closes.has(menu) ? closes.get(menu) : menu].end }
     });
@@ -192,13 +195,14 @@ function patchConfig(configText, hotspotsMap) {
     const locations = locateConfigScenes(text);
     if (locations.scenes.has(String(scene.id))) return;
 
+    if (typeof scene.file !== 'string' || !/\.(png|jpe?g|webp)$/i.test(scene.file)) throw new Error('Archivo de escena explícito requerido');
     const newScene = {
       id: String(scene.id),
       title: String(scene.title || scene.id),
       description: String(scene.description || ''),
       level: String(scene.level || 'PB'),
-      file: String(scene.file || (scene.id + '.png')),
-      basename: String(scene.basename || String(scene.file || (scene.id + '.png')).replace(/\.(png|jpe?g|webp)$/i, '')),
+      file: String(scene.file || ''),
+      basename: String(scene.basename || String(scene.file || '').replace(/\.(png|jpe?g|webp)$/i, '')),
       resolution: scene.resolution == null ? null : Number(scene.resolution),
       initialViewParameters: scene.initialViewParameters || null,
       hotspots: hotspotsMap[scene.id]
@@ -374,6 +378,43 @@ function handleSaveHotspots(req, res) {
   });
 }
 
+// Cambia exclusivamente el archivo de una escena: ID y hotspots permanecen iguales.
+function patchScenePanorama(configText, sceneId, file) {
+  const range = locateConfigScenes(configText).scenes.get(sceneId);
+  if (!range) throw new Error('Escena no encontrada: ' + sceneId);
+  const value = JSON.stringify(file);
+  return range.file
+    ? configText.slice(0, range.file.start) + value + configText.slice(range.file.end)
+    : configText.slice(0, range.objectStart) + '\n      file: ' + value + ',' + configText.slice(range.objectStart);
+}
+function handleSaveScenePanorama(req, res) {
+  let body = '';
+  req.on('data', chunk => { body += chunk.toString(); });
+  req.on('end', () => {
+    const property = getProperty(req);
+    if (!property) return jsonResponse(res,400,{ok:false,error:'Propiedad inválida'});
+    let configPath, original;
+    try {
+      const data = JSON.parse(body);
+      const file = panoramaFiles.validateFile(ROOT,property,data.file);
+      configPath = path.join(ROOT,'01_RECURSOS',property,'config.js');
+      original = fs.readFileSync(configPath,'utf8');
+      const next = patchScenePanorama(original,String(data.sceneId),file);
+      const context = {};
+      new vm.Script(next).runInNewContext(context,{timeout:1000});
+      if (!context.CBZ_CONFIG.scenes.some(s=>s.id===data.sceneId && s.file===file)) throw new Error('Referencia no verificada');
+      if (next !== original) fs.writeFileSync(configPath,next,'utf8');
+      if (fs.readFileSync(configPath,'utf8') !== next) throw new Error('Guardado no verificado');
+      return jsonResponse(res,200,{ok:true,persisted:true,file:file});
+    } catch (error) {
+      if (configPath && original !== undefined) {
+        try { if(fs.readFileSync(configPath,'utf8')!==original) fs.writeFileSync(configPath,original,'utf8'); } catch (_) {}
+      }
+      return jsonResponse(res,400,{ok:false,error:error.message});
+    }
+  });
+}
+
 function handleSaveSceneMenu(req, res) {
   let body = '';
   req.on('data', function (chunk) { body += chunk.toString(); });
@@ -424,16 +465,11 @@ function handleGetRenders(req, res) {
   if (!property) {
     return jsonResponse(res, 400, { ok: false, error: 'Propiedad inválida' });
   }
-  const rendersPath = path.join(ROOT, '01_RECURSOS', property, '360');
-  fs.readdir(rendersPath, (err, files) => {
-    if (err) {
-      return jsonResponse(res, 500, { ok: false, error: 'No se pudo leer el directorio 360' });
-    }
-    // Devuelve únicamente nombres de imágenes ya presentes en la carpeta 360.
-    // readdir no lee ni descarga el contenido de los archivos.
-    const renders = files.filter(f => /\.(png|jpe?g|webp)$/i.test(f));
-    jsonResponse(res, 200, { ok: true, renders: renders });
-  });
+  try {
+    jsonResponse(res,200,{ok:true,renders:panoramaFiles.listPanoramas(ROOT,property)});
+  } catch (error) {
+    jsonResponse(res,500,{ok:false,error:'No se pudo leer el directorio 360'});
+  }
 }
 
 // ════════════════════════════════════════════════════════════════
@@ -509,6 +545,10 @@ const server = http.createServer(function (req, res) {
 
   if (req.method === 'POST' && parsedUrl.pathname === '/api/save-scene-menu') {
     return handleSaveSceneMenu(req, res);
+  }
+
+  if (req.method === 'POST' && parsedUrl.pathname === '/api/save-scene-panorama') {
+    return handleSaveScenePanorama(req, res);
   }
 
   // API de renders

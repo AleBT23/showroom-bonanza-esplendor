@@ -5,6 +5,7 @@
 const fs = require('fs');
 const path = require('path');
 const vm = require('vm');
+const { listPanoramas } = require('./validate-panoramas');
 const PROPERTIES = ['ESPLENDOR', 'BONANZA'];
 const IMAGE_EXTENSION = /\.(png|jpe?g|webp|avif|gif|svg)$/i;
 
@@ -33,13 +34,14 @@ function generateAssets(root = __dirname) {
   return PROPERTIES.map(property => {
     const target = path.join(root, '01_RECURSOS', property, 'assets.js');
     const context = {};
-    // Conservar el video y el catálogo 360 existentes, sin cambiar su flujo.
+    // Conservar el video; indexar nombres de panoramas sin cambiar escenas.
     new vm.Script(fs.readFileSync(target, 'utf8'), { filename: target })
       .runInNewContext(context, { timeout: 1000 });
     if (!context.CBZ_ASSETS || typeof context.CBZ_ASSETS !== 'object') {
       throw new Error('Catálogo CBZ_ASSETS inválido: ' + target);
     }
     const assets = context.CBZ_ASSETS;
+    assets.panoramas = listPanoramas(root, property);
     assets.renders = listMedia(root, property, 'RENDERS');
     assets.plans = listMedia(root, property, 'PLANO');
     const text = '// Generado por node generate-assets.js. Rutas relativas a 03_PROTOTIPO/index.html.\n' +

@@ -29,6 +29,7 @@
   // INICIALIZACIÓN Y MAPEOS
   // ══════════════════════════════════════════════════════════════════
   function _buildFileMapping() {
+    CBZ_EDITOR.fileToSceneId = {};
     CBZ_CONFIG.scenes.forEach(function(scene) {
       if (scene.file) {
         CBZ_EDITOR.fileToSceneId[scene.file] = scene.id;
@@ -373,6 +374,52 @@
     });
   }
 
+  function _escapeHtml(value) {
+    return String(value).replace(/[&<>"']/g, function (c) {
+      return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
+    });
+  }
+
+  function _updatePanoramaEditor() {
+    var select = document.getElementById('cbz-ed-panorama-file');
+    var scene = _activeSceneData();
+    if (!select || !scene) return;
+    select.innerHTML = '';
+    var files = CBZ_EDITOR.availableFiles.slice();
+    if (scene.file && files.indexOf(scene.file) < 0) files.unshift(scene.file);
+    files.forEach(function (file) {
+      var option = document.createElement('option');
+      option.value = file;
+      option.textContent = file + (CBZ_EDITOR.availableFiles.indexOf(file) < 0 ? ' (ausente)' : '');
+      select.appendChild(option);
+    });
+    select.value = scene.file || '';
+    document.getElementById('cbz-ed-panorama-status').textContent = '';
+  }
+
+  function _savePanorama() {
+    var scene = _activeSceneData();
+    var button = document.getElementById('cbz-ed-panorama-save');
+    var status = document.getElementById('cbz-ed-panorama-status');
+    if (!scene) return;
+    if (Object.keys(CBZ_EDITOR.dirtyScenes).length) {
+      status.textContent = 'Guarda primero los cambios pendientes de hotspots.';
+      return;
+    }
+    button.disabled = true;
+    var file = document.getElementById('cbz-ed-panorama-file').value;
+    fetch('../api/save-scene-panorama?property=' + encodeURIComponent(window.CBZ_PROPERTY || 'ESPLENDOR'), {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({sceneId:scene.id,file:file})
+    }).then(function (r) {
+      return r.json().then(function (data) {
+        if (!r.ok || !data.ok || data.persisted !== true) throw new Error(data.error || 'No se confirmó el guardado');
+        status.textContent = '✓ Panorama guardado. Recarga para verlo; los cambios de menú sin guardar se perderán.';
+      });
+    }).catch(function (error) { status.textContent = '✗ ' + error.message; })
+      .then(function () { button.disabled = false; });
+  }
+
   function _buildPanel() {
     _panel = document.createElement('div');
     _panel.id = 'cbz-editor-panel';
@@ -381,8 +428,8 @@
     var targetOptions = '<option value="">-- Seleccionar --</option>';
     CBZ_EDITOR.availableFiles.forEach(function(file) {
       var targetSceneId = CBZ_EDITOR.fileToSceneId[file] || '';
-      var targetValue = targetSceneId || file.replace(/\.png$/i, '');
-      targetOptions += '<option value="' + targetValue + '">' + file + '</option>';
+      var targetValue = targetSceneId || file;
+      targetOptions += '<option value="' + _escapeHtml(targetValue) + '">' + _escapeHtml(file) + '</option>';
     });
 
     var sceneOptions = '';
@@ -402,6 +449,11 @@
       '  <select id="cbz-ed-scene-select" class="cbz-ed-input">',
              sceneOptions,
       '  </select>',
+      '  <label for="cbz-ed-panorama-file">ARCHIVO DE ESTA ESCENA</label>',
+      '  <select id="cbz-ed-panorama-file" class="cbz-ed-input"></select>',
+      '  <button id="cbz-ed-panorama-refresh" type="button">ACTUALIZAR ARCHIVOS</button>',
+      '  <button id="cbz-ed-panorama-save" class="cbz-ed-btn-primary" type="button">GUARDAR PANORAMA</button>',
+      '  <div id="cbz-ed-panorama-status" role="status"></div>',
       '</div>',
       '<div class="cbz-ed-section cbz-ed-menu-editor">',
       '  <div class="cbz-ed-label">LISTA DE ESPACIOS — ESCENA SELECCIONADA</div>',
@@ -469,6 +521,10 @@
     _menuPreview = document.getElementById('cbz-ed-menu-preview');
     _menuSaveStatus = document.getElementById('cbz-ed-menu-save-status');
 
+    document.getElementById('cbz-ed-panorama-save').addEventListener('click', _savePanorama);
+    document.getElementById('cbz-ed-panorama-refresh').addEventListener('click', function () {
+      _fetchAvailableRenders(_updatePanoramaEditor);
+    });
     document.getElementById('cbz-ed-add').addEventListener('click', _addHotspot);
     _btnDelete.addEventListener('click', _deleteHotspot);
     document.getElementById('cbz-ed-save').addEventListener('click', _saveToConfig);
@@ -566,6 +622,7 @@
     var sel = CBZ_EDITOR.selectedHotspot;
 
     if (_elScene) _elScene.value = CBZ_EDITOR.activeSceneId || '';
+    _updatePanoramaEditor();
     _updateMenuEditor();
 
     if (sel) {

@@ -44,7 +44,7 @@ var CBZ_CONFIG = {
   // Se usa cuando una escena no tiene file ni basename, o cuando
   // el archivo declarado no existe en disco.
   // null → desactivar placeholder (mostrará error claro en consola).
-  placeholder: 'CBZ_360_02_AREA_SOCIAL.png',
+  placeholder: 'CBZ_360_02_AREA_SOCIAL.webp',
 
   // ── VISOR ─────────────────────────────────────────────────────────
   viewer: {
@@ -75,7 +75,7 @@ var CBZ_CONFIG = {
       level:       'PB',
       menu: {"visible":true,"title":"COCHERA","level":"PB","levelTitle":"Planta baja","order":1},
       // file: nombre exacto del panorama ('CBZ_360_01_ACCESO.png' = aún no disponible)
-      file:        'CBZ_360_01_ACCESO.png',
+      file:        "CBZ_360_01_ACCESO.webp",
       // basename: nombre base sin extensión para resolución automática
       basename:    'CBZ_360_01_ACCESO',
       // resolution: hint de ancho real en px para Marzipano (null = default 4096)
@@ -104,7 +104,7 @@ var CBZ_CONFIG = {
       level:       'PB',
       menu: {"visible":true,"title":"SALA-COMEDOR","level":"PB","levelTitle":"Planta baja","order":2},
       // Render real disponible. Nombre exacto del archivo en 01_RECURSOS/360/
-      file:        'CBZ_360_02_AREA_SOCIAL.png',
+      file:        'CBZ_360_02_AREA_SOCIAL.webp',
       basename:    'CBZ_360_02_AREA_SOCIAL',
       resolution:  4096,   // px de ancho real del panorama
       initialViewParameters: {
@@ -151,7 +151,7 @@ var CBZ_CONFIG = {
       description: 'Cocina y comedor integrados de Casa BONANZA.',
       level:       'PB',
       menu: {"visible":true,"title":"COCINA","level":"PB","levelTitle":"Planta baja","order":3},
-      file:        'CBZ_360_03_COCINA_COMEDOR.png',
+      file:        'CBZ_360_03_COCINA_COMEDOR.webp',
       basename:    'CBZ_360_03_COCINA_COMEDOR',
       resolution:  null,
       initialViewParameters: {
@@ -186,7 +186,7 @@ var CBZ_CONFIG = {
       description: 'Pasillo de circulación del Nivel 2.',
       level:       'N2',
       menu: {"visible":false,"title":"Subir a PA","level":"N2","levelTitle":"Nivel 2","order":1},
-      file:        'CBZ_360_04_VESTIBULO.png',
+      file:        'CBZ_360_04_VESTIBULO.webp',
       basename:    'CBZ_360_04_PASILLO_N2',
       resolution:  null,
       initialViewParameters: {
@@ -240,7 +240,7 @@ var CBZ_CONFIG = {
       description: 'Patio de Casa ESPLENDOR.',
       level:       'PB',
       menu: {"visible":true,"title":"JARDIN TRASERO","level":"PB","levelTitle":"Planta baja","order":4},
-      file:        'CBZ_360_05_PATIO.png',
+      file:        'CBZ_360_05_PATIO.webp',
       basename:    'CBZ_360_05_PATIO',
       resolution:  null,
       initialViewParameters: {
@@ -266,7 +266,7 @@ var CBZ_CONFIG = {
       description: 'Recámara principal del Nivel 2.',
       level:       'PA',
       menu: {"visible":true,"title":"RECÁMARA PRINCIPAL","level":"PA","levelTitle":"Planta alta","order":1},
-      file:        'CBZ_360_06_RECAMARA_PRINCIPAL.png',
+      file:        'CBZ_360_06_RECAMARA_PRINCIPAL.webp',
       basename:    'CBZ_360_06_RECAMARA_PRINCIPAL',
       resolution:  null,
       initialViewParameters: {
@@ -308,7 +308,7 @@ var CBZ_CONFIG = {
       description: 'Baño principal del Nivel 2.',
       level:       'PA',
       menu: {"visible":true,"title":"BAÑO COMPLETO","level":"PA","levelTitle":"Planta alta","order":4},
-      file:        'CBZ_360_07_BAÑO_PRINCIPAL.png',
+      file:        'CBZ_360_07_BAÑO_PRINCIPAL.webp',
       basename:    'CBZ_360_07_BAÑO_PRINCIPAL',
       resolution:  null,
       initialViewParameters: {
@@ -341,7 +341,7 @@ var CBZ_CONFIG = {
       description: 'Vestidor principal del Nivel 2.',
       level:       'PA',
       menu: {"visible":true,"title":"VESTIDOR","level":"PA","levelTitle":"Planta alta","order":3},
-      file:        'CBZ_08_VESTIDOR_PRINCIPAL.png',
+      file:        'CBZ_08_VESTIDOR_PRINCIPAL.webp',
       basename:    'CBZ_08_VESTIDOR_PRINCIPAL',
       resolution:  null,
       initialViewParameters: { yaw: null, pitch: null, fov: null },
@@ -370,7 +370,7 @@ var CBZ_CONFIG = {
       description: 'Recámara secundaria del Nivel 2.',
       level:       'PA',
       menu: {"visible":true,"title":"RECAMARA SECUNDARIA 01","level":"PA","levelTitle":"Planta alta","order":2},
-      file:        'CBZ_360_09_RECAMARA_SECUNDARIA.png',
+      file:        'CBZ_360_09_RECAMARA_SECUNDARIA.webp',
       basename:    'CBZ_360_09_RECAMARA_SECUNDARIA',
       resolution:  null,
       initialViewParameters: { yaw: null, pitch: null, fov: null },
@@ -392,7 +392,7 @@ var CBZ_CONFIG = {
       description: 'Balcón principal de Casa ESPLENDOR.',
       level:       'N3',
       menu: {"visible":true,"title":"BALCON","level":"PA","levelTitle":"Planta alta","order":1},
-      file:        'CBZ_360_10_BALCON_PRINCIPAL.png',
+      file:        'CBZ_360_10_BALCON_PRINCIPAL.webp',
       basename:    'CBZ_360_10_BALCON_PRINCIPAL',
       resolution:  null,
       initialViewParameters: { yaw: null, pitch: null, fov: null },
@@ -415,7 +415,7 @@ var CBZ_CONFIG = {
       "title": "CBZ_360_12_ACCESO_ENTRADA",
       "description": "",
       "level": "PB",
-      "file": "CBZ_360_12_ACCESO_ENTRADA.png",
+      "file": "CBZ_360_12_ACCESO_ENTRADA.webp",
       "basename": "CBZ_360_12_ACCESO_ENTRADA",
       "resolution": null,
       "initialViewParameters": null,
@@ -457,7 +457,7 @@ var CBZ_CONFIG = {
       "title": "CBZ_360_13_BAÑO_PB",
       "description": "",
       "level": "PB",
-      "file": "CBZ_360_13_BAÑO_PB.png",
+      "file": "CBZ_360_13_BAÑO_PB.webp",
       "basename": "CBZ_360_13_BAÑO_PB",
       "resolution": null,
       "initialViewParameters": null,
@@ -478,7 +478,7 @@ var CBZ_CONFIG = {
       "title": "CBZ_360_11_BAÑO_SECUNDARIO",
       "description": "",
       "level": "PB",
-      "file": "CBZ_360_11_BAÑO_SECUNDARIO.png",
+      "file": "CBZ_360_11_BAÑO_SECUNDARIO.webp",
       "basename": "CBZ_360_11_BAÑO_SECUNDARIO",
       "resolution": null,
       "initialViewParameters": null,
@@ -499,7 +499,7 @@ var CBZ_CONFIG = {
       "title": "CBZ_10_REGADERA_PRINCIPAL",
       "description": "",
       "level": "PB",
-      "file": "CBZ_10_REGADERA_PRINCIPAL.png",
+      "file": "CBZ_10_REGADERA_PRINCIPAL.webp",
       "basename": "CBZ_10_REGADERA_PRINCIPAL",
       "resolution": null,
       "initialViewParameters": null,
@@ -521,7 +521,7 @@ var CBZ_CONFIG = {
       "title": "CBZ_360_09_RECAMARA_SECUNDARIA_02",
       "description": "",
       "level": "PB",
-      "file": "CBZ_360_09_RECAMARA_SECUNDARIA_02.png",
+      "file": "CBZ_360_09_RECAMARA_SECUNDARIA_02.webp",
       "basename": "CBZ_360_09_RECAMARA_SECUNDARIA_02",
       "resolution": null,
       "initialViewParameters": null,

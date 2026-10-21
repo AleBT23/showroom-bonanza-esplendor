@@ -81,21 +81,23 @@ function CBZ_sceneDataForTarget(targetId) {
   var target = String(targetId || '');
   var targetBase = target.replace(/\.(png|jpe?g|webp)$/i, '');
   var scenes = CBZ_CONFIG.scenes || [];
-  var scene = scenes.find(function (item) {
-    var fileBase = item.file && item.file.replace(/\.(png|jpe?g|webp)$/i, '');
-    return item.id === target || item.file === target ||
-      item.id === targetBase || fileBase === targetBase;
+  // Los IDs y archivos configurados tienen prioridad sobre cualquier catálogo.
+  var exact = scenes.filter(function (item) { return item.id === target || item.file === target; });
+  var matches = exact.length ? exact : scenes.filter(function (item) {
+    return item.id === targetBase || (item.file && item.file.replace(/\.(png|jpe?g|webp)$/i, '') === targetBase);
   });
-  if (scene) return scene;
+  if (matches.length === 1) return matches[0];
+  if (matches.length > 1) { console.warn('[CBZ] Destino ambiguo:', target); return null; }
 
-  // El editor guarda el nombre del archivo cuando todavía no existe una
-  // entrada de escena en config.js. Crear esa escena al primer clic.
   var file = target;
-  var id = target;
-  if (/\.(png|jpe?g|webp)$/i.test(target)) {
-    id = target.replace(/\.(png|jpe?g|webp)$/i, '');
-  } else {
-    file = target + '.png';
+  var id = targetBase;
+  if (!/\.(png|jpe?g|webp)$/i.test(target)) {
+    var available = (typeof CBZ_ASSETS !== 'undefined' && CBZ_ASSETS.panoramas) || [];
+    var candidates = available.filter(function (name) {
+      return name.replace(/\.(png|jpe?g|webp)$/i, '') === target;
+    });
+    if (candidates.length !== 1) { console.warn('[CBZ] Destino sin archivo explícito o ambiguo:', target); return null; }
+    file = candidates[0];
   }
 
   return {
@@ -116,6 +118,7 @@ function CBZ_switchScene(targetId) {
 
   if (!entry) {
     var data = CBZ_sceneDataForTarget(sceneId);
+    if (!data) return;
     sceneId = data.id;
     entry = CBZ_SCENES[sceneId] || CBZ_registerScene(data);
   }
